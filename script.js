@@ -44,16 +44,24 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       closeModal('paymentModal');
+      closeModal('tossPaymentModal');
+      closeModal('paymentSuccessModal');
       closeModal('loginModal');
       closeModal('newsletterModal');
       closeModal('editProductModal');
     }
   });
 
-  // 8. URL 파라미터 확인 (?mode=admin)
+  // 8. URL 파라미터 확인 (?mode=admin, ?buy=prodId)
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('mode') === 'admin') {
     switchView(true);
+  }
+  const buyProdId = urlParams.get('buy');
+  if (buyProdId) {
+    setTimeout(() => {
+      openTossPaymentModal(buyProdId);
+    }, 300);
   }
 });
 
@@ -211,8 +219,8 @@ function renderClientProducts(category = 'all') {
               <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
             </a>
             <button onclick="handleQuickBuy('${p.id}')" class="btn-lift py-2.5 rounded-xl bg-itmemoPrimary hover:bg-itmemoPrimaryHover text-xs font-bold text-white shadow-sm flex items-center justify-center gap-1 transition-all">
-              <i data-lucide="${isFree ? 'download' : 'zap'}" class="w-3.5 h-3.5"></i>
-              <span>${isFree ? '무료 받기' : '소장하기'}</span>
+              <i data-lucide="${isFree ? 'download' : 'credit-card'}" class="w-3.5 h-3.5"></i>
+              <span>${isFree ? '무료 받기' : '구매하기'}</span>
             </button>
           </div>
         </div>
@@ -230,7 +238,8 @@ function handleQuickBuy(id) {
     showToast(`'${p.title}' 무료 다운로드가 완료되었습니다.`);
     triggerDummyDownload(`${p.title}.pdf`);
   } else {
-    window.location.href = `product-detail.html?id=${id}`;
+    // 실제 등록된 상품 데이터와 실시간 연동된 토스페이먼츠 안전 결제창 팝업
+    openTossPaymentModal(id);
   }
 }
 
@@ -1020,3 +1029,216 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
 }
+
+/* ============================================================
+   9. 토스페이먼츠 (Toss Payments) 실시간 안전 결제창 & 성공 모달 연동
+   ============================================================ */
+let currentPaymentProduct = null;
+let currentPaymentMethod = 'toss'; // toss, card, kakao, naver, transfer
+
+/**
+ * 대시보드에서 등록한 실제 상품 데이터와 100% 실시간 연동된 토스페이먼츠 결제창 팝업
+ */
+function openTossPaymentModal(productId) {
+  if (!window.itmemoDB) return;
+
+  let product = null;
+  if (productId) {
+    product = itmemoDB.getProductById(productId);
+  }
+
+  // productId가 없거나 못 찾은 경우 첫 번째 유료 상품 선택
+  if (!product) {
+    const products = itmemoDB.getProducts();
+    product = products.find(p => p.salePrice > 0) || products[0];
+  }
+
+  if (!product) {
+    alert('결제 가능한 상품 정보를 찾을 수 없습니다.');
+    return;
+  }
+
+  currentPaymentProduct = product;
+
+  // 1. 상품 정보 실시간 바인딩
+  const imgEl = document.getElementById('tossProductThumb');
+  if (imgEl) imgEl.src = product.imageUrl || '';
+
+  const catEl = document.getElementById('tossProductCat');
+  if (catEl) catEl.textContent = product.categoryName || '디지털 콘텐츠';
+
+  const titleEl = document.getElementById('tossProductTitle');
+  if (titleEl) titleEl.textContent = product.title;
+
+  const summaryEl = document.getElementById('tossProductSummary');
+  if (summaryEl) summaryEl.textContent = product.summary || 'IT-MEMO 실전 부업 파이프라인';
+
+  const orderIdEl = document.getElementById('tossOrderId');
+  const generatedOrderId = 'ITMEMO-' + Date.now().toString().slice(-8);
+  if (orderIdEl) orderIdEl.textContent = generatedOrderId;
+
+  const origPriceEl = document.getElementById('tossOriginalPrice');
+  if (origPriceEl) {
+    if (product.originalPrice > product.salePrice) {
+      origPriceEl.textContent = product.originalPrice.toLocaleString() + '원';
+      origPriceEl.classList.remove('hidden');
+    } else {
+      origPriceEl.classList.add('hidden');
+    }
+  }
+
+  const salePriceEl = document.getElementById('tossSalePrice');
+  if (salePriceEl) {
+    salePriceEl.textContent = product.salePrice.toLocaleString() + '원';
+  }
+
+  const submitTextEl = document.getElementById('tossSubmitBtnText');
+  if (submitTextEl) {
+    submitTextEl.textContent = `${product.salePrice.toLocaleString()}원 결제하기`;
+  }
+
+  // 2. 기본 결제 수단 '토스페이'로 초기화
+  selectTossMethod('toss');
+
+  // 3. 약관 동의 체크
+  const agreeCheck = document.getElementById('tossAgreeAll');
+  if (agreeCheck) agreeCheck.checked = true;
+
+  // 4. 모달 열기
+  openModal('tossPaymentModal');
+  if (window.lucide) lucide.createIcons();
+}
+
+function closeTossPaymentModal() {
+  closeModal('tossPaymentModal');
+}
+
+/**
+ * 토스페이먼츠 결제 수단 선택 탭 전환
+ */
+function selectTossMethod(method) {
+  currentPaymentMethod = method;
+
+  const methods = ['toss', 'card', 'kakao', 'naver', 'transfer'];
+  methods.forEach(m => {
+    const btn = document.getElementById(`toss-method-${m}`);
+    if (btn) {
+      if (m === method) {
+        btn.classList.add('active', 'border-tossBlue', 'bg-blue-50/60');
+        btn.classList.remove('border-slate-200', 'bg-white');
+      } else {
+        btn.classList.remove('active', 'border-tossBlue', 'bg-blue-50/60');
+        btn.classList.add('border-slate-200', 'bg-white');
+      }
+    }
+  });
+
+  // 카드 결제 세부 옵션 표시 여부
+  const cardOption = document.getElementById('tossCardDetailOption');
+  if (cardOption) {
+    if (method === 'card') {
+      cardOption.classList.remove('hidden');
+    } else {
+      cardOption.classList.add('hidden');
+    }
+  }
+}
+
+/**
+ * 토스페이먼츠 가상 결제 승인 제출 핸들러
+ */
+function submitTossPayment(event) {
+  event.preventDefault();
+
+  if (!currentPaymentProduct) return;
+
+  const agreeCheck = document.getElementById('tossAgreeAll');
+  if (agreeCheck && !agreeCheck.checked) {
+    alert('전자금융거래 및 필수 약관에 동의해 주세요.');
+    return;
+  }
+
+  const buyerNameInput = document.getElementById('tossBuyerName');
+  const buyerEmailInput = document.getElementById('tossBuyerEmail');
+  const buyerPhoneInput = document.getElementById('tossBuyerPhone');
+
+  const buyerName = (buyerNameInput ? buyerNameInput.value.trim() : '') || '직장인 수강생';
+  const buyerEmail = (buyerEmailInput ? buyerEmailInput.value.trim() : '') || 'buyer@company.com';
+  const buyerPhone = (buyerPhoneInput ? buyerPhoneInput.value.trim() : '') || '010-1234-5678';
+
+  const submitBtn = document.getElementById('tossSubmitBtn');
+  const submitText = document.getElementById('tossSubmitBtnText');
+  const submitSpinner = document.getElementById('tossSubmitSpinner');
+
+  // 결제 승인 중 로딩 피드백 (토스 공식 로딩 UX)
+  if (submitBtn) submitBtn.disabled = true;
+  if (submitSpinner) submitSpinner.classList.remove('hidden');
+  if (submitText) submitText.textContent = '토스페이먼츠 안전 결제 승인 처리 중...';
+
+  setTimeout(() => {
+    const methodNames = {
+      toss: '토스페이 (간편결제)',
+      card: '신용/체크카드',
+      kakao: '카카오페이',
+      naver: '네이버페이',
+      transfer: '실시간 계좌이체'
+    };
+    const paymentMethodLabel = methodNames[currentPaymentMethod] || '토스페이먼츠 간편결제';
+    const orderId = 'ORD-' + Date.now();
+
+    // 1. 주문 데이터 브라우저 localStorage에 안전하게 영구 저장
+    const savedOrder = itmemoDB.addOrder({
+      orderId: orderId,
+      productId: currentPaymentProduct.id,
+      productTitle: currentPaymentProduct.title,
+      amount: currentPaymentProduct.salePrice,
+      customerName: buyerName,
+      customerEmail: buyerEmail,
+      customerPhone: buyerPhone,
+      paymentMethod: paymentMethodLabel
+    });
+
+    // 2. 토스 결제창 닫기
+    closeTossPaymentModal();
+
+    // 버튼 상태 복원
+    if (submitBtn) submitBtn.disabled = false;
+    if (submitSpinner) submitSpinner.classList.add('hidden');
+    if (submitText) submitText.textContent = `${currentPaymentProduct.salePrice.toLocaleString()}원 결제하기`;
+
+    // 3. 결제 최종 성공 모달창 데이터 바인딩
+    const successTitle = document.getElementById('successProductTitle');
+    if (successTitle) successTitle.textContent = currentPaymentProduct.title;
+
+    const successAmount = document.getElementById('successAmount');
+    if (successAmount) successAmount.textContent = currentPaymentProduct.salePrice.toLocaleString() + '원';
+
+    const successMethod = document.getElementById('successMethod');
+    if (successMethod) successMethod.textContent = paymentMethodLabel;
+
+    const successOrderId = document.getElementById('successOrderId');
+    if (successOrderId) successOrderId.textContent = orderId;
+
+    const successPaidAt = document.getElementById('successPaidAt');
+    if (successPaidAt) successPaidAt.textContent = new Date().toLocaleString('ko-KR');
+
+    // 4. 깔끔한 성공 알림 모달창 오픈!
+    openModal('paymentSuccessModal');
+
+    // 5. 토스트 알림창 병행 피드백
+    showToast('결제가 정상 승인되었습니다! 감사합니다.');
+
+    if (window.lucide) lucide.createIcons();
+  }, 1000);
+}
+
+function closePaymentSuccessModal() {
+  closeModal('paymentSuccessModal');
+}
+
+function downloadPurchasedContent() {
+  if (!currentPaymentProduct) return;
+  triggerDummyDownload(`${currentPaymentProduct.title}_구매완료_자료집.pdf`);
+  showToast(`'${currentPaymentProduct.title}' 파일 다운로드가 시작되었습니다.`);
+}
+

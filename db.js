@@ -237,6 +237,30 @@ window.itmemoDB = {
     localStorage.setItem(DB_KEYS.ADMIN_MODE, isActive ? 'true' : 'false');
   },
 
-  // 4. 이미지 압축 헬퍼 노출
+  // 4. 주문 및 결제 내역 관리 (Orders)
+  getOrders() {
+    return JSON.parse(localStorage.getItem(DB_KEYS.ORDERS) || '[]');
+  },
+
+  addOrder({ orderId, productId, productTitle, amount, customerName, customerEmail, customerPhone, paymentMethod }) {
+    const orders = this.getOrders();
+    const newOrder = {
+      id: orderId || 'ORD-' + Date.now(),
+      productId: productId || 'prod_ebook_01',
+      productTitle: productTitle || 'IT-MEMO 실전 전자책',
+      amount: Number(amount) || 0,
+      customerName: customerName ? customerName.trim() : '직장인 수강생',
+      customerEmail: customerEmail ? customerEmail.trim() : 'buyer@company.com',
+      customerPhone: customerPhone ? customerPhone.trim() : '010-0000-0000',
+      paymentMethod: paymentMethod || '토스페이먼츠 간편결제',
+      status: 'DONE',
+      paidAt: new Date().toLocaleString('ko-KR')
+    };
+    orders.unshift(newOrder);
+    localStorage.setItem(DB_KEYS.ORDERS, JSON.stringify(orders));
+    return newOrder;
+  },
+
+  // 5. 이미지 압축 헬퍼 노출
   compressImage: compressImageToDataUrl
 };
