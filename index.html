@@ -37,6 +37,9 @@
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
+  <!-- Supabase JS Client SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <!-- Custom CSS -->
   <link rel="stylesheet" href="style.css">
 </head>
@@ -420,7 +423,7 @@
                 <i id="icon-faq3" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform"></i>
               </button>
               <div id="content-faq3" class="hidden px-5 pb-4 text-sm text-itmemoTextSub border-t border-slate-100 bg-slate-50/50 leading-relaxed">
-                모든 상품 및 뉴스레터 구독 데이터는 브라우저의 안전한 LocalStorage에 실시간 영구 보관되며, 우측 상단 [🛠️ 관리자 모드] 대시보드에서 즉시 확인하고 관리할 수 있습니다.
+                모든 상품 및 뉴스레터 구독 데이터는 글로벌 클라우드 관계형 데이터베이스인 Supabase DB에 실시간 안전하게 저장되며, 우측 상단 [🛠️ 관리자 모드] 대시보드에서 즉시 확인하고 동기화할 수 있습니다.
               </div>
             </div>
           </div>
@@ -470,7 +473,7 @@
           <p>상호명: IT-MEMO (아이티 메모) | 대표자: 홍길동 | 사업자등록번호: 000-00-00000 | 통신판매업신고: 제2026-서울강남-0000호</p>
           <p>주소: 서울특별시 강남구 테헤란로 000 IT-MEMO 타워 | 고객센터: support@it-memo.kr</p>
           <p class="pt-2 text-slate-600">
-            © 2026 IT-MEMO. All rights reserved. 본 사이트의 모든 데이터는 LocalStorage에 안전하게 저장됩니다.
+            © 2026 IT-MEMO. All rights reserved. 본 사이트의 데이터는 원격 Supabase 관계형 클라우드 데이터베이스에 안전하게 저장·관리됩니다.
           </p>
         </div>
       </div>

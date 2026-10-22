@@ -14,7 +14,7 @@ let registerCoverDataUrl = '';
 let editCoverDataUrl = '';
 let currentEditingProductId = null;
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   // 1. Lucide 아이콘 초기화
   if (window.lucide) {
     lucide.createIcons();
@@ -29,10 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // 4. 관리자 모드 토글 및 뷰 동기화
   initAdminMode();
 
-  // 5. 상품 렌더링 (홈 화면 1:1 정사각 & 대시보드 관리 테이블)
-  renderClientProducts('all');
-  renderAdminProducts();
-  renderAdminSubscribers();
+  // 5. 상품 렌더링 (Supabase DB 비동기 가져오기: 홈 화면 1:1 정사각 & 대시보드 관리 테이블)
+  await renderClientProducts('all');
+  await renderAdminProducts();
+  await renderAdminSubscribers();
 
   // 6. 드롭존 및 블로그 툴바 에디터 초기화
   setupProductFormDropzone();
@@ -59,8 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   const buyProdId = urlParams.get('buy');
   if (buyProdId) {
-    setTimeout(() => {
-      openTossPaymentModal(buyProdId);
+    setTimeout(async () => {
+      await openTossPaymentModal(buyProdId);
     }, 300);
   }
 });
@@ -148,11 +148,11 @@ function filterClientProducts(category) {
   renderClientProducts(category);
 }
 
-function renderClientProducts(category = 'all') {
+async function renderClientProducts(category = 'all') {
   const grid = document.getElementById('clientProductGrid');
   if (!grid || !window.itmemoDB) return;
 
-  const products = itmemoDB.getProducts();
+  const products = await itmemoDB.getProducts();
   const filtered = category === 'all' 
     ? products 
     : products.filter(p => p.category === category);
@@ -231,15 +231,15 @@ function renderClientProducts(category = 'all') {
   if (window.lucide) lucide.createIcons();
 }
 
-function handleQuickBuy(id) {
-  const p = itmemoDB.getProductById(id);
+async function handleQuickBuy(id) {
+  const p = await itmemoDB.getProductById(id);
   if (!p) return;
   if (p.salePrice === 0) {
     showToast(`'${p.title}' 무료 다운로드가 완료되었습니다.`);
     triggerDummyDownload(`${p.title}.pdf`);
   } else {
     // 실제 등록된 상품 데이터와 실시간 연동된 토스페이먼츠 안전 결제창 팝업
-    openTossPaymentModal(id);
+    await openTossPaymentModal(id);
   }
 }
 
@@ -537,7 +537,7 @@ async function insertImageIntoEditor(editor, file) {
 /* ============================================================
    5. 상품 등록 폼 제출 & 관리자 상품 테이블
    ============================================================ */
-function handleCreateProduct(event) {
+async function handleCreateProduct(event) {
   event.preventDefault();
 
   const title = document.getElementById('regTitle').value.trim();
@@ -557,35 +557,59 @@ function handleCreateProduct(event) {
   // 대표 이미지 결정: 파일 업로드 DataUrl > 웹 링크 URL > 기본 카테고리 SVG
   let finalImageUrl = registerCoverDataUrl || linkUrl;
 
-  const newProd = itmemoDB.addProduct({
-    title,
-    category,
-    originalPrice,
-    salePrice,
-    summary,
-    imageUrl: finalImageUrl,
-    detailContent
-  });
+  const submitBtn = event.target.querySelector('button[type="submit"]');
+  const originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `
+      <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <span>Supabase 클라우드 저장 중...</span>
+    `;
+  }
 
-  showToast(`🎉 '${newProd.title}' 상품이 성공적으로 등록되었습니다!`);
+  try {
+    const newProd = await itmemoDB.addProduct({
+      title,
+      category,
+      originalPrice,
+      salePrice,
+      summary,
+      imageUrl: finalImageUrl,
+      detailContent
+    });
 
-  // 폼 리셋
-  document.getElementById('productCreateForm').reset();
-  editor.innerHTML = '';
-  registerCoverDataUrl = '';
-  document.getElementById('regPreviewBox').classList.add('hidden');
-  document.getElementById('regDropzone').classList.remove('hidden');
+    showToast(`🎉 '${newProd.title}' 상품이 Supabase DB에 등록되었습니다!`);
 
-  // 리렌더링
-  renderAdminProducts();
-  renderClientProducts(activeProductCategory);
+    // 폼 리셋
+    document.getElementById('productCreateForm').reset();
+    editor.innerHTML = '';
+    registerCoverDataUrl = '';
+    document.getElementById('regPreviewBox').classList.add('hidden');
+    document.getElementById('regDropzone').classList.remove('hidden');
+
+    // UI 리렌더링 동기화
+    await renderAdminProducts();
+    await renderClientProducts(activeProductCategory);
+  } catch (err) {
+    console.error(err);
+    alert('상품 등록 중 오류가 발생했습니다.');
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalBtnHtml;
+      if (window.lucide) lucide.createIcons();
+    }
+  }
 }
 
-function renderAdminProducts() {
+async function renderAdminProducts() {
   const tableBody = document.getElementById('adminProductTableBody');
   if (!tableBody || !window.itmemoDB) return;
 
-  const products = itmemoDB.getProducts();
+  const products = await itmemoDB.getProducts();
 
   if (products.length === 0) {
     tableBody.innerHTML = `
@@ -645,22 +669,22 @@ function renderAdminProducts() {
   if (window.lucide) lucide.createIcons();
 }
 
-function deleteProductAction(id) {
-  const p = itmemoDB.getProductById(id);
+async function deleteProductAction(id) {
+  const p = await itmemoDB.getProductById(id);
   if (!p) return;
   if (!confirm(`'${p.title}' 상품을 정말 삭제하시겠습니까?`)) return;
 
-  itmemoDB.deleteProduct(id);
+  await itmemoDB.deleteProduct(id);
   showToast(`'${p.title}' 상품이 삭제되었습니다.`);
-  renderAdminProducts();
-  renderClientProducts(activeProductCategory);
+  await renderAdminProducts();
+  await renderClientProducts(activeProductCategory);
 }
 
 /* ============================================================
    6. 상품 수정 풀스크린 모달
    ============================================================ */
-function openEditModal(id) {
-  const product = itmemoDB.getProductById(id);
+async function openEditModal(id) {
+  const product = await itmemoDB.getProductById(id);
   if (!product) return;
 
   currentEditingProductId = id;
@@ -695,7 +719,7 @@ function openEditModal(id) {
   openModal('editProductModal');
 }
 
-function handleUpdateProduct(event) {
+async function handleUpdateProduct(event) {
   event.preventDefault();
   if (!currentEditingProductId) return;
 
@@ -709,20 +733,37 @@ function handleUpdateProduct(event) {
 
   let finalImageUrl = editCoverDataUrl || linkUrl;
 
-  itmemoDB.updateProduct(currentEditingProductId, {
-    title,
-    category,
-    originalPrice,
-    salePrice,
-    summary,
-    imageUrl: finalImageUrl,
-    detailContent
-  });
+  const submitBtn = event.target.querySelector('button[type="submit"]');
+  const origBtnText = submitBtn ? submitBtn.innerText : '';
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerText = '수정 내용 Supabase 저장 중...';
+  }
 
-  closeModal('editProductModal');
-  showToast('✏️ 상품 정보가 성공적으로 수정되었습니다.');
-  renderAdminProducts();
-  renderClientProducts(activeProductCategory);
+  try {
+    await itmemoDB.updateProduct(currentEditingProductId, {
+      title,
+      category,
+      originalPrice,
+      salePrice,
+      summary,
+      imageUrl: finalImageUrl,
+      detailContent
+    });
+
+    closeModal('editProductModal');
+    showToast('✏️ 상품 정보가 Supabase DB에 성공적으로 수정되었습니다.');
+    await renderAdminProducts();
+    await renderClientProducts(activeProductCategory);
+  } catch (err) {
+    console.error(err);
+    alert('상품 수정 중 오류가 발생했습니다.');
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerText = origBtnText;
+    }
+  }
 }
 
 /* ============================================================
@@ -736,7 +777,7 @@ function closeNewsletterModal() {
   closeModal('newsletterModal');
 }
 
-function handleNewsletterSubmit(event) {
+async function handleNewsletterSubmit(event) {
   event.preventDefault();
 
   const nameInput = document.getElementById('newsName');
@@ -752,29 +793,46 @@ function handleNewsletterSubmit(event) {
     return;
   }
 
-  itmemoDB.addSubscriber({ name, phone, email });
+  const submitBtn = event.target.querySelector('button[type="submit"]');
+  const origBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerText = 'Supabase 저장 중...';
+  }
 
-  closeNewsletterModal();
+  try {
+    await itmemoDB.addSubscriber({ name, phone, email });
 
-  // 안내 모달 또는 알림창 띄우기
-  alert(`구독이 완료되었습니다!\n\n[구독 신청 정보]\n성함: ${name}\n전화번호: ${phone}\n이메일: ${email}\n\n신청하신 이메일로 IT-MEMO 실전 부업 인사이트가 주기적으로 발송됩니다.`);
-  showToast(`'${name}'님, 뉴스레터 구독이 성공적으로 완료되었습니다!`);
+    closeNewsletterModal();
 
-  // 입력창 초기화
-  nameInput.value = '';
-  phoneInput.value = '';
-  emailInput.value = '';
+    // 안내 모달 또는 알림창 띄우기
+    alert(`구독이 완료되었습니다!\n\n[구독 신청 정보]\n성함: ${name}\n전화번호: ${phone}\n이메일: ${email}\n\n신청하신 이메일로 IT-MEMO 실전 부업 인사이트가 주기적으로 발송됩니다.`);
+    showToast(`'${name}'님, 뉴스레터 구독이 성공적으로 완료되었습니다!`);
 
-  // 관리자 대시보드 테이블 실시간 갱신
-  renderAdminSubscribers();
+    // 입력창 초기화
+    nameInput.value = '';
+    phoneInput.value = '';
+    emailInput.value = '';
+
+    // 관리자 대시보드 테이블 실시간 갱신
+    await renderAdminSubscribers();
+  } catch (err) {
+    console.error(err);
+    alert('구독 신청 처리 중 오류가 발생했습니다.');
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = origBtnHtml;
+    }
+  }
 }
 
-function renderAdminSubscribers() {
+async function renderAdminSubscribers() {
   const tableBody = document.getElementById('adminSubscribersTableBody');
   const countBadge = document.getElementById('adminSubCountBadge');
   if (!tableBody || !window.itmemoDB) return;
 
-  const subscribers = itmemoDB.getSubscribers();
+  const subscribers = await itmemoDB.getSubscribers();
 
   if (countBadge) {
     countBadge.textContent = `${subscribers.length}명`;
@@ -817,11 +875,11 @@ function renderAdminSubscribers() {
   if (window.lucide) lucide.createIcons();
 }
 
-function deleteSubscriberAction(id) {
+async function deleteSubscriberAction(id) {
   if (!confirm('해당 구독자를 목록에서 삭제하시겠습니까?')) return;
-  itmemoDB.deleteSubscriber(id);
+  await itmemoDB.deleteSubscriber(id);
   showToast('구독자가 목록에서 삭제되었습니다.');
-  renderAdminSubscribers();
+  await renderAdminSubscribers();
 }
 
 /* ============================================================
@@ -1039,17 +1097,17 @@ let currentPaymentMethod = 'toss'; // toss, card, kakao, naver, transfer
 /**
  * 대시보드에서 등록한 실제 상품 데이터와 100% 실시간 연동된 토스페이먼츠 결제창 팝업
  */
-function openTossPaymentModal(productId) {
+async function openTossPaymentModal(productId) {
   if (!window.itmemoDB) return;
 
   let product = null;
   if (productId) {
-    product = itmemoDB.getProductById(productId);
+    product = await itmemoDB.getProductById(productId);
   }
 
   // productId가 없거나 못 찾은 경우 첫 번째 유료 상품 선택
   if (!product) {
-    const products = itmemoDB.getProducts();
+    const products = await itmemoDB.getProducts();
     product = products.find(p => p.salePrice > 0) || products[0];
   }
 
