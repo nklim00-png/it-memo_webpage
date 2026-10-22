@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IT-MEMO | 퇴근 후 하루 30분, 월 50만 원 실전 부업 전자책</title>
+  <meta name="description" content="과장된 월 천만 원 신화는 없습니다. 평범한 30대 직장인이 직접 부딪혀 만든 하루 30분 무자본 부업 가이드북 & 실전 템플릿.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            itmemoPrimary: '#10b981',
+            itmemoPrimaryHover: '#059669',
+            itmemoBg: '#ffffff',
+            itmemoSurface: '#f8fafc',
+            itmemoTextMain: '#0f172a',
+            itmemoTextSub: '#64748b'
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-itmemoBg text-itmemoTextMain font-sans antialiased selection:bg-itmemoPrimary selection:text-white overflow-x-hidden">
+
+  <!-- 1. 상단 네비게이션 헤더 -->
+  <header id="main-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white/80 backdrop-blur-md border-b border-slate-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <!-- 로고 -->
+      <a href="#" class="flex items-center gap-2 group">
+        <span class="w-8 h-8 rounded-lg bg-itmemoPrimary/10 border border-itmemoPrimary/30 flex items-center justify-center text-itmemoPrimary font-mono font-bold text-lg group-hover:scale-105 transition-transform">
+          ⚡
+        </span>
+        <span class="font-mono font-bold text-xl tracking-tight text-itmemoTextMain">
+          IT-MEMO
+        </span>
+      </a>
+
+      <!-- 데스크톱 메뉴 -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-itmemoTextSub">
+        <a href="#features" class="hover:text-itmemoPrimary transition-colors">3대 핵심가치</a>
+        <a href="#free-lead" class="hover:text-itmemoPrimary transition-colors">무료 스타터 PDF</a>
+        <a href="products.html" class="hover:text-itmemoPrimary transition-colors font-semibold text-itmemoTextMain">전자책/가격</a>
+        <a href="about.html" class="hover:text-itmemoPrimary transition-colors">브랜드 스토리</a>
+        <a href="#reviews" class="hover:text-itmemoPrimary transition-colors">수강생 후기</a>
+        <a href="#faq" class="hover:text-itmemoPrimary transition-colors">자주 묻는 질문</a>
+      </nav>
+
+      <!-- 우측 CTA 및 유저 액션 -->
+      <div class="flex items-center gap-3">
+        <a href="mypage.html" class="text-xs sm:text-sm font-medium text-itmemoTextSub hover:text-itmemoTextMain px-3 py-1.5 rounded-lg hover:bg-slate-50 transition-colors">
+          마이페이지
+        </a>
+        <a href="products.html" class="btn-lift inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold bg-itmemoPrimary hover:bg-itmemoPrimaryHover text-white px-4 py-2 rounded-lg shadow-sm shadow-emerald-500/20 transition-all">
+          <span>얼리버드 2.9만 소장</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 2. 히어로 섹션 (마우스 패럴랙스 적용) -->
+    <section id="hero" class="relative min-h-[92vh] pt-28 pb-16 flex items-center justify-center overflow-hidden border-b border-slate-100">
+      <!-- 마우스 패럴랙스 인터랙티브 캔버스 배경 -->
+      <canvas id="parallaxCanvas" class="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-40"></canvas>
+      
+      <!-- 배경 은은한 방사형 그라디언트 -->
+      <div class="absolute inset-0 bg-gradient-to-b from-emerald-50/40 via-transparent to-transparent pointer-events-none z-0"></div>
+
+      <!-- 플로팅 패럴랙스 오브젝트 레이어 -->
+      <div id="parallaxFloating1" class="absolute top-24 left-[10%] w-64 h-64 bg-emerald-200/20 rounded-full blur-3xl pointer-events-none transition-transform duration-200 ease-out"></div>
+      <div id="parallaxFloating2" class="absolute bottom-12 right-[12%] w-80 h-80 bg-slate-200/30 rounded-full blur-3xl pointer-events-none transition-transform duration-200 ease-out"></div>
+
+      <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <!-- 신뢰 지표 배지 -->
+        <div class="reveal inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/60 text-emerald-800 text-xs font-semibold mb-6">
+          <span class="w-2 h-2 rounded-full bg-itmemoPrimary animate-ping"></span>
+          <span>누적 무료 다운로드 1,240명 돌파 &bull; 수강생 만족도 4.9/5.0</span>
+        </div>
+
+        <!-- 메인 헤드카피 -->
+        <h1 class="reveal text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-itmemoTextMain leading-[1.15] mb-6">
+          퇴근 후 하루 30분,<br>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">
+            이번 달 통장에 50만 원
+          </span>을 더하는 현실 부업
+        </h1>
+
+        <!-- 서브 카피 -->
+        <p class="reveal max-w-2xl mx-auto text-base sm:text-lg text-itmemoTextSub font-normal leading-relaxed mb-8">
+          허황된 월 천만 원 신화는 없습니다. 평범한 30대 직장인이 야근 후 직접 부딪히며 검증한 무자본 실무 파이프라인의 모든 것. 오늘 밤 즉시 복사해서 쓰는 10종 템플릿까지 모두 드립니다.
+        </p>
+
+        <!-- 핵심 CTA 버튼 그룹 -->
+        <div class="reveal flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+          <a href="#product-preview" class="btn-lift w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-itmemoPrimary hover:bg-itmemoPrimaryHover text-white font-semibold text-base px-7 py-3.5 rounded-xl shadow-lg shadow-emerald-500/25 transition-all">
+            <span>정규 전자책 42% 얼리버드 소장 (29,000원)</span>
+            <i data-lucide="zap" class="w-5 h-5 text-emerald-200"></i>
+          </a>
+          <a href="#free-lead" class="btn-lift w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-itmemoTextMain border border-slate-200 font-semibold text-base px-6 py-3.5 rounded-xl transition-all">
+            <span>무료 스타터 PDF 먼저 받기</span>
+            <i data-lucide="download" class="w-4 h-4 text-itmemoTextSub"></i>
+          </a>
+        </div>
+
+        <!-- 하단 3대 핵심 요약 바 -->
+        <div class="reveal grid grid-cols-3 max-w-2xl mx-auto pt-6 border-t border-slate-100 text-left sm:text-center gap-4">
+          <div>
+            <div class="font-mono text-xs text-itmemoTextSub">실행 소요시간</div>
+            <div class="font-bold text-sm sm:text-base text-itmemoTextMain mt-0.5">하루 30분 압축</div>
+          </div>
+          <div class="border-x border-slate-100">
+            <div class="font-mono text-xs text-itmemoTextSub">초기 준비자본</div>
+            <div class="font-bold text-sm sm:text-base text-itmemoTextMain mt-0.5">0원 (무자본 시작)</div>
+          </div>
+          <div>
+            <div class="font-mono text-xs text-itmemoTextSub">제공 형태</div>
+            <div class="font-bold text-sm sm:text-base text-emerald-700 mt-0.5">PDF + 실전 템플릿</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. 3대 핵심 가치 카드 섹션 -->
+    <section id="features" class="py-20 bg-itmemoSurface border-b border-slate-100">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <span class="font-mono text-xs uppercase tracking-wider text-itmemoPrimary font-bold bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/50">
+            OUR PILLARS
+          </span>
+          <h2 class="text-3xl font-extrabold text-itmemoTextMain mt-3 tracking-tight">
+            IT-MEMO가 절대 양보하지 않는 3가지 원칙
+          </h2>
+          <p class="text-itmemoTextSub text-base mt-3">
+            실현 불가능한 자극적인 공약 대신, 직장인이 진짜 완주하고 성과를 내도록 설계했습니다.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- 기둥 1: 직장인 맞춤 현실성 -->
+          <div class="reveal card-lift bg-white p-8 rounded-2xl border border-slate-100 shadow-sm">
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200/60 flex items-center justify-center text-itmemoPrimary mb-6">
+              <i data-lucide="clock" class="w-6 h-6"></i>
+            </div>
+            <div class="font-mono text-xs font-semibold text-itmemoPrimary uppercase">Pillar 01</div>
+            <h3 class="text-xl font-bold text-itmemoTextMain mt-1 mb-3">직장인 맞춤 현실성</h3>
+            <p class="text-itmemoTextSub text-sm leading-relaxed mb-4">
+              야근하고 돌아온 밤, 침대에서도 30분이면 소화할 수 있도록 군더더기 이론을 모두 걷어냈습니다. 출퇴근 지하철 세팅 15분, 귀가 후 실천 15분으로 쪼개진 현실적 커리큘럼입니다.
+            </p>
+            <div class="pt-4 border-t border-slate-50 flex items-center gap-2 text-xs font-mono text-slate-500">
+              <i data-lucide="check-circle-2" class="w-4 h-4 text-itmemoPrimary"></i>
+              <span>평균 챕터 소요시간 20분 내외</span>
+            </div>
+          </div>
+
+          <!-- 기둥 2: 과장 없는 투명한 신뢰 -->
+          <div class="reveal card-lift bg-white p-8 rounded-2xl border border-slate-100 shadow-sm" style="transition-delay: 100ms;">
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200/60 flex items-center justify-center text-itmemoPrimary mb-6">
+              <i data-lucide="shield-check" class="w-6 h-6"></i>
+            </div>
+            <div class="font-mono text-xs font-semibold text-itmemoPrimary uppercase">Pillar 02</div>
+            <h3 class="text-xl font-bold text-itmemoTextMain mt-1 mb-3">과장 없는 투명한 신뢰</h3>
+            <p class="text-itmemoTextSub text-sm leading-relaxed mb-4">
+              단기간 수억 원을 번다는 가짜 포토샵 계좌가 아닙니다. 30대 대리가 월급 외에 실제로 매달 40~50만 원의 부수입을 찍어낸 통장 입금 기록과 시행착오 과정을 투명하게 증명합니다.
+            </p>
+            <div class="pt-4 border-t border-slate-50 flex items-center gap-2 text-xs font-mono text-slate-500">
+              <i data-lucide="check-circle-2" class="w-4 h-4 text-itmemoPrimary"></i>
+              <span>실제 정산 내역 및 수강생 후기 인증</span>
+            </div>
+          </div>
+
+          <!-- 기둥 3: 복사해 쓰는 실천 템플릿 -->
+          <div class="reveal card-lift bg-white p-8 rounded-2xl border border-slate-100 shadow-sm" style="transition-delay: 200ms;">
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200/60 flex items-center justify-center text-itmemoPrimary mb-6">
+              <i data-lucide="file-spreadsheet" class="w-6 h-6"></i>
+            </div>
+            <div class="font-mono text-xs font-semibold text-itmemoPrimary uppercase">Pillar 03</div>
+            <h3 class="text-xl font-bold text-itmemoTextMain mt-1 mb-3">복사해 쓰는 실천 템플릿</h3>
+            <p class="text-itmemoTextSub text-sm leading-relaxed mb-4">
+              "읽고 나서 뭘 해야 하지?"라는 막막함이 없도록, 바로 붙여넣기만 하면 상품 등록과 세팅이 끝나는 10종 노션/엑셀 실무 치트키 템플릿을 전자책과 함께 패키지로 제공합니다.
+            </p>
+            <div class="pt-4 border-t border-slate-50 flex items-center gap-2 text-xs font-mono text-slate-500">
+              <i data-lucide="check-circle-2" class="w-4 h-4 text-itmemoPrimary"></i>
+              <span>즉시 복사 가능한 노션 템플릿 10종</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. 무료 직장인 부업 스타터 PDF 신청 폼 (리드 마그넷) -->
+    <section id="free-lead" class="py-20 bg-white border-b border-slate-100">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-8 sm:p-12 text-white shadow-xl relative overflow-hidden">
+          <!-- 배경 장식 글로우 -->
+          <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+          <div class="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+            <div class="md:col-span-7">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 font-mono text-xs mb-4">
+                <span>FREE STARTER KIT</span>
+              </div>
+              <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight leading-snug">
+                의심되신다면 먼저 읽어보세요.<br>
+                <span class="text-itmemoPrimary">부업 스타터 3가지 치트키 PDF</span>를 100% 무료로 드립니다.
+              </h2>
+              <p class="text-slate-300 text-sm mt-3 leading-relaxed">
+                출퇴근 지하철에서 10분 만에 읽을 수 있는 실전 가이드 요약본입니다. 이메일만 입력하시면 즉시 다운로드 링크가 열립니다.
+              </p>
+            </div>
+
+            <!-- 이메일 입력 폼 -->
+            <div class="md:col-span-5 bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10">
+              <form id="freeLeadForm" onsubmit="handleFreeLead(event)" class="space-y-3">
+                <div>
+                  <label for="leadEmail" class="block text-xs font-mono text-slate-300 mb-1">받으실 이메일 주소</label>
+                  <input type="email" id="leadEmail" required placeholder="name@company.com" class="w-full px-4 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder-slate-400 text-sm focus:outline-none focus:border-itmemoPrimary focus:ring-1 focus:ring-itmemoPrimary transition-all">
+                </div>
+                <button type="submit" id="leadSubmitBtn" class="w-full btn-lift flex items-center justify-center gap-2 bg-itmemoPrimary hover:bg-itmemoPrimaryHover text-white font-bold py-3 rounded-xl text-sm transition-all shadow-md shadow-emerald-900/40">
+                  <i data-lucide="download" class="w-4 h-4"></i>
+                  <span>무료 PDF 지금 즉시 받기</span>
+                </button>
+                <p class="text-[11px] text-slate-400 text-center font-mono">
+                  * 스팸은 절대 보내지 않으며 1클릭 수신거부 가능합니다.
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. 전자책 상세 프리뷰 & 목차 아코디언 & 가격표 -->
+    <section id="product-preview" class="py-20 bg-itmemoSurface border-b border-slate-100">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <span class="font-mono text-xs uppercase tracking-wider text-itmemoPrimary font-bold bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/50">
+            CURRICULUM & PRICING
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-itmemoTextMain mt-3 tracking-tight">
+            하루 30분, 이번 달 50만 원 달성 로드맵
+          </h2>
+          <p class="text-itmemoTextSub text-base mt-3">
+            단계별 예상 실행 시간과 구체적인 액션 플랜을 사전에 투명하게 확인하세요.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          <!-- 좌측: 커리큘럼 목차 아코디언 -->
+          <div class="lg:col-span-7 space-y-4">
+            <h3 class="text-lg font-bold text-itmemoTextMain flex items-center gap-2 mb-2 font-mono">
+              <i data-lucide="list-ordered" class="w-5 h-5 text-itmemoPrimary"></i>
+              <span>상세 목차 및 챕터별 소요시간</span>
+            </h3>
+
+            <!-- 아코디언 챕터 1 -->
+            <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+              <button onclick="toggleAccordion('ch1')" class="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors">
+                <div class="flex items-center gap-3">
+                  <span class="font-mono text-xs font-bold px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200/60">CH 01</span>
+                  <span class="font-semibold text-sm sm:text-base text-itmemoTextMain">직장인을 위한 무자본 부업 모델 선정</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="hidden sm:inline-block font-mono text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded">소요 15분</span>
+                  <i id="icon-ch1" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-200"></i>
+                </div>
+              </button>
+              <div id="content-ch1" class="hidden px-5 pb-4 pt-1 text-sm text-itmemoTextSub border-t border-slate-100 bg-slate-50/50 leading-relaxed">
+                <ul class="space-y-1.5 list-disc list-inside">
+                  <li>퇴근길 모바일로 끝내는 나의 숨겨진 경험/지식 발굴 공식</li>
+                  <li>플랫폼 수수료 떼이지 않고 다이렉트로 정산받는 세팅법</li>
+                  <li>망하지 않는 무자본 3대 아이템 (디지털 템플릿, PDF 가이드, 큐레이션)</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- 아코디언 챕터 2 -->
+            <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+              <button onclick="toggleAccordion('ch2')" class="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors">
+                <div class="flex items-center gap-3">
+                  <span class="font-mono text-xs font-bold px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200/60">CH 02</span>
+                  <span class="font-semibold text-sm sm:text-base text-itmemoTextMain">사기 소리 안 듣는 정직한 상품 패키징</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="hidden sm:inline-block font-mono text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded">소요 25분</span>
+                  <i id="icon-ch2" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-200"></i>
+                </div>
+              </button>
+              <div id="content-ch2" class="hidden px-5 pb-4 pt-1 text-sm text-itmemoTextSub border-t border-slate-100 bg-slate-50/50 leading-relaxed">
+                <ul class="space-y-1.5 list-disc list-inside">
+                  <li>구매 저항을 단번에 허무는 '치트키 템플릿' 제작 워크플로우</li>
+                  <li>미리캔버스/캔바로 30분 만에 끝내는 고단가 전자책 표지 목업</li>
+                  <li>저작권 문제 100% 안전하게 방어하는 무료 폰트/이미지 세팅</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- 아코디언 챕터 3 -->
+            <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+              <button onclick="toggleAccordion('ch3')" class="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors">
+                <div class="flex items-center gap-3">
+                  <span class="font-mono text-xs font-bold px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200/60">CH 03</span>
+                  <span class="font-semibold text-sm sm:text-base text-itmemoTextMain">첫 주에 첫 50만 원 입금받는 판매 퍼널</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="hidden sm:inline-block font-mono text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded">소요 20분</span>
+                  <i id="icon-ch3" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-200"></i>
+                </div>
+              </button>
+              <div id="content-ch3" class="hidden px-5 pb-4 pt-1 text-sm text-itmemoTextSub border-t border-slate-100 bg-slate-50/50 leading-relaxed">
+                <ul class="space-y-1.5 list-disc list-inside">
+                  <li>광고비 0원으로 잠재 고객 100명 모으는 직장인 커뮤니티 공략법</li>
+                  <li>의심 많은 고객을 설득하는 '무료 맛보기 → 본 결제' 전환 치트키</li>
+                  <li>토스페이먼츠 연동으로 카드/간편결제 원스톱 자동화하기</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- 아코디언 챕터 4 -->
+            <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+              <button onclick="toggleAccordion('ch4')" class="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors">
+                <div class="flex items-center gap-3">
+                  <span class="font-mono text-xs font-bold px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200/60">CH 04</span>
+                  <span class="font-semibold text-sm sm:text-base text-itmemoTextMain">야근 시즌에도 굴러가는 자동화 시스템</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="hidden sm:inline-block font-mono text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded">소요 30분</span>
+                  <i id="icon-ch4" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-200"></i>
+                </div>
+              </button>
+              <div id="content-ch4" class="hidden px-5 pb-4 pt-1 text-sm text-itmemoTextSub border-t border-slate-100 bg-slate-50/50 leading-relaxed">
+                <ul class="space-y-1.5 list-disc list-inside">
+                  <li>고객 문의를 90% 줄여주는 투명한 FAQ 사전 차단 시스템</li>
+                  <li>주문 즉시 파일이 다운로드되는 자동 발송 루프 완성</li>
+                  <li>월 50만 원에서 100만 원으로 스케일업하는 재구매 트리거</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- 우측: 얼리버드 가격표 카드 (구매 CTA) -->
+          <div class="lg:col-span-5 bg-white rounded-3xl p-8 border-2 border-itmemoPrimary shadow-xl relative">
+            <div class="absolute -top-3.5 right-6 bg-itmemoPrimary text-white font-mono text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide shadow-sm">
+              42% 얼리버드 특가
+            </div>
+
+            <h4 class="text-xl font-bold text-itmemoTextMain mb-1">
+              IT-MEMO 실전 전자책 풀패키지
+            </h4>
+            <p class="text-xs text-itmemoTextSub mb-6">
+              정규 PDF 가이드북 (130p) + 실전 노션/엑셀 템플릿 10종
+            </p>
+
+            <!-- 가격 블록 -->
+            <div class="flex items-baseline gap-2 mb-6">
+              <span class="text-3xl sm:text-4xl font-extrabold text-itmemoTextMain font-mono">29,000</span>
+              <span class="text-sm font-bold text-itmemoTextMain">원</span>
+              <span class="text-base text-slate-400 line-through font-mono ml-2">50,000원</span>
+            </div>
+
+            <div class="space-y-3 mb-8 text-sm text-itmemoTextSub">
+              <div class="flex items-center gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-itmemoPrimary"></i>
+                <span class="text-itmemoTextMain font-medium">한 번 결제로 평생 소장 & 재다운로드</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-itmemoPrimary"></i>
+                <span>결제 즉시 PDF 다운로드 + 이메일 보관 링크 발송</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-itmemoPrimary"></i>
+                <span>오늘 밤 즉시 복사해 쓰는 실전 템플릿 10종 포함</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-itmemoPrimary"></i>
+                <span>구매자 전용 1:1 Q&A 오픈채팅방 초대권</span>
+              </div>
+            </div>
+
+            <button onclick="openPaymentModal()" class="w-full btn-lift flex items-center justify-center gap-2 bg-itmemoPrimary hover:bg-itmemoPrimaryHover text-white font-bold py-4 rounded-xl text-base shadow-lg shadow-emerald-500/25 transition-all">
+              <i data-lucide="credit-card" class="w-5 h-5"></i>
+              <span>지금 29,000원에 평생 소장하기</span>
+            </button>
+
+            <p class="text-center text-xs text-slate-400 font-mono mt-3">
+              토스페이먼츠 안전결제 &bull; 카드, 카카오페이, 네이버페이 지원
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. 수강생 검증 후기 무한 마퀴 섹션 -->
+    <section id="reviews" class="py-20 bg-white border-b border-slate-100 overflow-hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 text-center">
+        <span class="font-mono text-xs uppercase tracking-wider text-itmemoPrimary font-bold bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/50">
+          PROVEN REVIEWS
+        </span>
+        <h2 class="text-3xl font-extrabold text-itmemoTextMain mt-3 tracking-tight">
+          평범한 직장인 동료들이 만들어낸 실제 성과
+        </h2>
+        <p class="text-itmemoTextSub text-sm sm:text-base mt-2">
+          마우스를 올리시면 슬라이드가 멈추어 편안하게 읽으실 수 있습니다.
+        </p>
+      </div>
+
+      <!-- 무한 마퀴 트랙 컨테이너 -->
+      <div class="marquee-wrapper relative w-full overflow-hidden py-4">
+        <div class="marquee-track flex gap-6 w-max">
+          <!-- 후기 카드 1 -->
+          <div class="card-lift w-80 sm:w-96 p-6 rounded-2xl bg-itmemoSurface border border-slate-100 shadow-sm flex-shrink-0">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 font-bold flex items-center justify-center text-xs font-mono">김*수</div>
+                <span class="text-xs text-itmemoTextSub">30대 대기업 영업직</span>
+              </div>
+              <span class="font-mono text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">첫 달 +48만 원</span>
+            </div>
+            <p class="text-sm text-itmemoTextMain leading-relaxed">
+              "야근이 잦아서 엄두를 못 냈는데 챕터가 20분 단위로 나뉘어 있어 출퇴근 지하철에서 다 세팅했습니다. 이번 달 카드값 48만 원 진짜 부업으로 갚았네요."
+            </p>
+            <div class="flex items-center gap-1 text-amber-400 mt-4 text-xs">
+              ★★★★★ <span class="text-slate-400 text-xs ml-1">5.0</span>
+            </div>
+          </div>
+
+          <!-- 후기 카드 2 -->
+          <div class="card-lift w-80 sm:w-96 p-6 rounded-2xl bg-itmemoSurface border border-slate-100 shadow-sm flex-shrink-0">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-slate-200 text-slate-700 font-bold flex items-center justify-center text-xs font-mono">이*진</div>
+                <span class="text-xs text-itmemoTextSub">30대 IT 기획자</span>
+              </div>
+              <span class="font-mono text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">첫 달 +54만 원</span>
+            </div>
+            <p class="text-sm text-itmemoTextMain leading-relaxed">
+              "월 천만 원 번다는 어그로 강의에 수십만 원 날리고 실망했었는데, 이건 군더더기 없이 진짜 직장인 실무 템플릿만 줘서 바로 판매 등록했습니다. 진정성이 느껴집니다."
+            </p>
+            <div class="flex items-center gap-1 text-amber-400 mt-4 text-xs">
+              ★★★★★ <span class="text-slate-400 text-xs ml-1">5.0</span>
+            </div>
+          </div>
+
+          <!-- 후기 카드 3 -->
+          <div class="card-lift w-80 sm:w-96 p-6 rounded-2xl bg-itmemoSurface border border-slate-100 shadow-sm flex-shrink-0">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-teal-100 text-teal-700 font-bold flex items-center justify-center text-xs font-mono">박*우</div>
+                <span class="text-xs text-itmemoTextSub">30대 제조업 연구원</span>
+              </div>
+              <span class="font-mono text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">2주 만에 +35만 원</span>
+            </div>
+            <p class="text-sm text-itmemoTextMain leading-relaxed">
+              "초기 자본이 하나도 안 든다는 점이 제일 마음에 들었어요. 위험 부담 없이 주말 1시간 투자해서 만든 템플릿으로 꾸준히 정산받고 있습니다."
+            </p>
+            <div class="flex items-center gap-1 text-amber-400 mt-4 text-xs">
+              ★★★★★ <span class="text-slate-400 text-xs ml-1">5.0</span>
+            </div>
+          </div>
+
+          <!-- 후기 카드 4 -->
+          <div class="card-lift w-80 sm:w-96 p-6 rounded-2xl bg-itmemoSurface border border-slate-100 shadow-sm flex-shrink-0">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 font-bold flex items-center justify-center text-xs font-mono">최*영</div>
+                <span class="text-xs text-itmemoTextSub">30대 마케터</span>
+              </div>
+              <span class="font-mono text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">첫 달 +62만 원</span>
+            </div>
+            <p class="text-sm text-itmemoTextMain leading-relaxed">
+              "무료 요약 PDF 먼저 읽어보고 '이 사람 진짜구나' 싶어서 바로 얼리버드 결제했습니다. 29,000원 투자해서 20배 넘게 회수했네요."
+            </p>
+            <div class="flex items-center gap-1 text-amber-400 mt-4 text-xs">
+              ★★★★★ <span class="text-slate-400 text-xs ml-1">5.0</span>
+            </div>
+          </div>
+
+          <!-- 복제본 (무한 마퀴 연결) -->
+          <div class="card-lift w-80 sm:w-96 p-6 rounded-2xl bg-itmemoSurface border border-slate-100 shadow-sm flex-shrink-0" aria-hidden="true">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 font-bold flex items-center justify-center text-xs font-mono">김*수</div>
+                <span class="text-xs text-itmemoTextSub">30대 대기업 영업직</span>
+              </div>
+              <span class="font-mono text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">첫 달 +48만 원</span>
+            </div>
+            <p class="text-sm text-itmemoTextMain leading-relaxed">
+              "야근이 잦아서 엄두를 못 냈는데 챕터가 20분 단위로 나뉘어 있어 출퇴근 지하철에서 다 세팅했습니다. 이번 달 카드값 48만 원 진짜 부업으로 갚았네요."
+            </p>
+            <div class="flex items-center gap-1 text-amber-400 mt-4 text-xs">
+              ★★★★★ <span class="text-slate-400 text-xs ml-1">5.0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. 강사 진솔 스토리 섹션 (당사자성) -->
+    <section id="story" class="py-20 bg-itmemoSurface border-b border-slate-100">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-3xl p-8 sm:p-12 border border-slate-200/80 shadow-sm grid grid-cols-1 md:grid-cols-12 gap-10 items-center">
+          <div class="md:col-span-4 text-center">
+            <div class="w-32 h-32 sm:w-40 sm:h-40 mx-auto rounded-full bg-gradient-to-tr from-emerald-500 to-slate-800 p-1 mb-4 shadow-lg">
+              <div class="w-full h-full rounded-full bg-slate-100 flex items-center justify-center text-5xl">
+                👨‍💻
+              </div>
+            </div>
+            <h3 class="text-lg font-bold text-itmemoTextMain">IT-MEMO 디렉터</h3>
+            <p class="text-xs font-mono text-itmemoTextSub mt-0.5">8년차 IT 직장인 &bull; 1인 지식 창업가</p>
+            <div class="mt-3 inline-flex items-center gap-1 px-2.5 py-1 rounded bg-slate-100 text-slate-600 text-xs font-mono">
+              <i data-lucide="award" class="w-3.5 h-3.5 text-itmemoPrimary"></i>
+              <span>누적 부수입 3,800만 원+</span>
+            </div>
+          </div>
+
+          <div class="md:col-span-8 space-y-4">
+            <span class="font-mono text-xs font-bold text-itmemoPrimary uppercase tracking-wider">FOUNDER'S NOTE</span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-itmemoTextMain leading-snug">
+              "저 역시 매달 통장 잔고를 보며 한숨 쉬던<br>
+              평범한 30대 직장인이었습니다."
+            </h2>
+            <p class="text-itmemoTextSub text-sm sm:text-base leading-relaxed">
+              월급날 스쳐 지나가는 카드값, 부모님 칠순 잔치와 축의금 봉투 앞에서 작아지던 시절이 있었습니다. 부업을 해보겠다고 유튜브를 뒤졌지만, 월 천만 원 번다는 강의들은 자본금이 수천만 원 들거나 하루 종일 매달려야 하는 전업 투자자용이었습니다.
+            </p>
+            <p class="text-itmemoTextSub text-sm sm:text-base leading-relaxed">
+              <strong>"직장인에게 필요한 건 대박이 아니라, 매달 숨통을 틔워줄 확실한 50만 원이다."</strong><br>
+              이 깨달음 하나로 1년 동안 야근 후 30분씩 직접 부딪히며 시스템을 만들었습니다. 제가 겪은 수많은 삽질을 건너뛰고 여러분은 바로 첫 달부터 50만 원을 만드실 수 있도록 모든 공식과 템플릿을 솔직하게 담았습니다.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. 자주 묻는 질문(FAQ) 아코디언 섹션 -->
+    <section id="faq" class="py-20 bg-white border-b border-slate-100">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-16">
+          <span class="font-mono text-xs uppercase tracking-wider text-itmemoPrimary font-bold bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/50">
+            FAQ
+          </span>
+          <h2 class="text-3xl font-extrabold text-itmemoTextMain mt-3 tracking-tight">
+            자주 묻는 질문
+          </h2>
+          <p class="text-itmemoTextSub text-base mt-2">
+            시작하기 전 궁금하신 점들을 명쾌하고 투명하게 정리해 드립니다.
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          <!-- FAQ 1 -->
+          <div class="border border-slate-200 rounded-xl overflow-hidden">
+            <button onclick="toggleAccordion('faq1')" class="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors font-medium text-itmemoTextMain">
+              <span>Q. 진짜 하루 30분만 투자해도 가능한가요?</span>
+              <i id="icon-faq1" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-200"></i>
+            </button>
+            <div id="content-faq1" class="hidden px-6 pb-4 pt-1 text-sm text-itmemoTextSub border-t border-slate-100 bg-slate-50/50 leading-relaxed">
+              네, 가능합니다. 본 가이드북은 지친 직장인의 멘탈과 체력을 감안하여 출퇴근 지하철 15분 세팅과 귀가 후 15분 실습으로 모든 과정을 잘게 쪼개어 놓았습니다.
+            </div>
+          </div>
+
+          <!-- FAQ 2 -->
+          <div class="border border-slate-200 rounded-xl overflow-hidden">
+            <button onclick="toggleAccordion('faq2')" class="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors font-medium text-itmemoTextMain">
+              <span>Q. 준비물이나 초기 자본이 필요한가요?</span>
+              <i id="icon-faq2" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-200"></i>
+            </button>
+            <div id="content-faq2" class="hidden px-6 pb-4 pt-1 text-sm text-itmemoTextSub border-t border-slate-100 bg-slate-50/50 leading-relaxed">
+              아닙니다. 노트북(또는 스마트폰) 외에 유료 툴이나 초기 자본금은 단 1원도 필요하지 않습니다. 무료로 활용 가능한 공공 툴과 노션 기반으로 설계되었습니다.
+            </div>
+          </div>
+
+          <!-- FAQ 3 -->
+          <div class="border border-slate-200 rounded-xl overflow-hidden">
+            <button onclick="toggleAccordion('faq3')" class="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors font-medium text-itmemoTextMain">
+              <span>Q. 전자책과 템플릿은 언제, 어떻게 받나요?</span>
+              <i id="icon-faq3" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-200"></i>
+            </button>
+            <div id="content-faq3" class="hidden px-6 pb-4 pt-1 text-sm text-itmemoTextSub border-t border-slate-100 bg-slate-50/50 leading-relaxed">
+              결제 완료 즉시 결제 성공 페이지에서 [PDF 즉시 다운로드] 버튼이 나타나며, 가입하신 이메일로도 평생 다운로드 가능한 보안 링크가 백업 발송됩니다.
+            </div>
+          </div>
+
+          <!-- FAQ 4 -->
+          <div class="border border-slate-200 rounded-xl overflow-hidden">
+            <button onclick="toggleAccordion('faq4')" class="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors font-medium text-itmemoTextMain">
+              <span>Q. 환불 규정은 어떻게 되나요?</span>
+              <i id="icon-faq4" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-200"></i>
+            </button>
+            <div id="content-faq4" class="hidden px-6 pb-4 pt-1 text-sm text-itmemoTextSub border-t border-slate-100 bg-slate-50/50 leading-relaxed">
+              전자상거래법상 디지털 콘텐츠 특성상 결제 후 다운로드가 시작되거나 이메일 링크가 발송된 이후에는 환불이 어렵습니다. 단, 파일 결함 또는 시스템 오류 시 즉시 재발급 또는 100% 환불해 드립니다.
+            </div>
+          </div>
+
+          <!-- FAQ 5 -->
+          <div class="border border-slate-200 rounded-xl overflow-hidden">
+            <button onclick="toggleAccordion('faq5')" class="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors font-medium text-itmemoTextMain">
+              <span>Q. 따라 하다가 막히면 질문할 수 있나요?</span>
+              <i id="icon-faq5" data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-200"></i>
+            </button>
+            <div id="content-faq5" class="hidden px-6 pb-4 pt-1 text-sm text-itmemoTextSub border-t border-slate-100 bg-slate-50/50 leading-relaxed">
+              네, 전자책 구매자 전원에게 1:1 질문이 가능한 전용 카카오톡 오픈채팅방 링크가 본문 내에 제공됩니다.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. 최하단 최종 구매 전환 CTA 배너 -->
+    <section class="py-20 bg-slate-900 text-white relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-r from-emerald-950/40 via-transparent to-slate-900 pointer-events-none"></div>
+      <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <span class="inline-block font-mono text-xs font-bold text-itmemoPrimary uppercase px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 mb-4">
+          LIMITED EARLYBIRD OFFER
+        </span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">
+          오늘 밤, 당신의 퇴근길이 달라집니다.
+        </h2>
+        <p class="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
+          매달 스쳐 지나가는 월급을 보며 아쉬워하는 대신, 하루 30분의 실행으로 평생 든든한 50만 원의 추가 파이프라인을 시작하세요.
+        </p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <button onclick="openPaymentModal()" class="w-full sm:w-auto btn-lift inline-flex items-center justify-center gap-2 bg-itmemoPrimary hover:bg-itmemoPrimaryHover text-white font-bold text-base px-8 py-4 rounded-xl shadow-lg shadow-emerald-500/30 transition-all">
+            <i data-lucide="zap" class="w-5 h-5 text-emerald-200"></i>
+            <span>정규 전자책 29,000원에 평생 소장하기</span>
+          </button>
+          <a href="#free-lead" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 text-white font-medium text-base px-6 py-4 rounded-xl border border-white/20 transition-all">
+            <span>무료 요약본 먼저 받아보기</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 10. 사업자 정보 및 법적 고지 푸터 -->
+  <footer class="bg-slate-950 text-slate-400 py-12 border-t border-slate-800 text-xs leading-relaxed">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pb-8 border-b border-slate-800">
+        <div class="flex items-center gap-2">
+          <span class="font-mono font-bold text-lg text-white">⚡ IT-MEMO</span>
+          <span class="text-slate-500 font-mono">| 직장인 50만 원 실전 부업 연구소</span>
+        </div>
+        <div class="flex flex-wrap gap-5 text-xs font-medium">
+          <a href="about.html" class="hover:text-white transition-colors">브랜드 스토리</a>
+          <a href="products.html" class="hover:text-white transition-colors">전자책/가격</a>
+          <a href="mypage.html" class="hover:text-white transition-colors">마이페이지</a>
+          <a href="#" onclick="alert('이용약관 페이지는 준비 중입니다.'); return false;" class="hover:text-white transition-colors">이용약관</a>
+          <a href="#" onclick="alert('개인정보처리방침 페이지는 준비 중입니다.'); return false;" class="hover:text-white transition-colors">개인정보처리방침</a>
+          <a href="#faq" class="hover:text-white transition-colors">고객지원 FAQ</a>
+        </div>
+      </div>
+
+      <div class="pt-8 space-y-2 text-slate-500 font-mono text-[11px]">
+        <p>상호명: IT-MEMO (아이티 메모) | 대표자: 홍길동 | 사업자등록번호: 000-00-00000 | 통신판매업신고: 제2026-서울강남-0000호</p>
+        <p>주소: 서울특별시 강남구 테헤란로 000 IT-MEMO 타워 | 고객센터: support@it-memo.kr | 유선문의: 02-000-0000</p>
+        <p class="pt-2 text-slate-600">
+          © 2026 IT-MEMO. All rights reserved. 본 사이트의 모든 콘텐츠 및 템플릿의 무단 전재와 복제를 금합니다.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 결제 주문서 모달 (토스페이먼츠 결제위젯 대기 뷰) -->
+  <div id="paymentModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative animate-scaleUp">
+      <button onclick="closeModal('paymentModal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-1">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="flex items-center gap-2 mb-4">
+        <span class="w-7 h-7 rounded-lg bg-emerald-50 border border-emerald-200 text-itmemoPrimary flex items-center justify-center font-bold text-sm">⚡</span>
+        <span class="font-mono font-bold text-sm text-itmemoTextMain">IT-MEMO 안전결제</span>
+      </div>
+
+      <h3 class="text-xl font-extrabold text-itmemoTextMain mb-1">
+        퇴근 후 월 50만 원 전자책 풀패키지
+      </h3>
+      <p class="text-xs text-itmemoTextSub mb-6">
+        정규 PDF 130p + 노션/엑셀 실무 치트키 템플릿 10종 포함
+      </p>
+
+      <div class="bg-itmemoSurface p-4 rounded-xl border border-slate-100 mb-6 space-y-2">
+        <div class="flex justify-between text-xs text-itmemoTextSub">
+          <span>정가</span>
+          <span class="line-through font-mono">50,000원</span>
+        </div>
+        <div class="flex justify-between text-xs text-emerald-600 font-semibold">
+          <span>런칭 기념 얼리버드 할인</span>
+          <span class="font-mono">-21,000원</span>
+        </div>
+        <div class="flex justify-between text-base font-bold text-itmemoTextMain pt-2 border-t border-slate-200">
+          <span>최종 결제 금액</span>
+          <span class="text-itmemoPrimary font-mono text-lg">29,000원</span>
+        </div>
+      </div>
+
+      <!-- 토스페이먼츠 결제위젯 안내 박스 -->
+      <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 mb-6 space-y-1">
+        <div class="font-bold flex items-center gap-1.5 text-slate-800">
+          <i data-lucide="shield-check" class="w-4 h-4 text-itmemoPrimary"></i>
+          <span>토스페이먼츠 결제위젯 연동 준비 단계</span>
+        </div>
+        <p class="text-[11px] leading-relaxed">
+          5순위 작업(토스페이먼츠 결제위젯 SDK) 연동 시 실제 결제창이 팝업됩니다. 지금은 즉시 테스트 승인을 시뮬레이션할 수 있습니다.
+        </p>
+      </div>
+
+      <div class="space-y-2.5">
+        <button onclick="simulatePaymentSuccess()" class="w-full btn-lift flex items-center justify-center gap-2 bg-itmemoPrimary hover:bg-itmemoPrimaryHover text-white font-bold py-3.5 rounded-xl text-sm transition-all shadow-md shadow-emerald-500/20">
+          <i data-lucide="check" class="w-4 h-4"></i>
+          <span>테스트 결제 승인 & 다운로드 체험</span>
+        </button>
+        <button onclick="closeModal('paymentModal')" class="w-full py-2.5 text-xs text-slate-500 hover:text-slate-700 font-medium">
+          다음에 결제하기
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 간이 로그인 모달 -->
+  <div id="loginModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative animate-scaleUp">
+      <button onclick="closeModal('loginModal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-1">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="text-center mb-6">
+        <span class="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 text-itmemoPrimary inline-flex items-center justify-center font-bold text-xl mb-2">⚡</span>
+        <h3 class="text-lg font-bold text-itmemoTextMain">IT-MEMO 로그인</h3>
+        <p class="text-xs text-itmemoTextSub">전자책 구매 내역 및 다운로드 확인</p>
+      </div>
+
+      <form onsubmit="handleLogin(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-mono text-slate-500 mb-1">이메일</label>
+          <input type="email" required placeholder="name@company.com" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-itmemoPrimary">
+        </div>
+        <div>
+          <label class="block text-xs font-mono text-slate-500 mb-1">비밀번호</label>
+          <input type="password" required placeholder="••••••••" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-itmemoPrimary">
+        </div>
+        <button type="submit" class="w-full btn-lift bg-itmemoTextMain hover:bg-slate-800 text-white font-semibold py-3 rounded-xl text-sm transition-all mt-2">
+          로그인하기
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 알림 토스트 메시지 -->
+  <div id="toastMessage" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white text-sm px-5 py-3 rounded-xl shadow-2xl flex items-center gap-2 border border-slate-700 pointer-events-none">
+    <i data-lucide="check-circle" class="w-4 h-4 text-itmemoPrimary"></i>
+    <span id="toastText">처리가 완료되었습니다.</span>
+  </div>
+
+  <!-- Local DB & Custom Script -->
+  <script src="db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

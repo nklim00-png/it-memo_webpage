@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>전자책 & 템플릿 패키지 | IT-MEMO</title>
+  <meta name="description" content="퇴근 후 하루 30분, 월 50만 원 달성 실전 전자책 가이드북 (130p) + 10종 실무 템플릿 패키지.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            itmemoPrimary: '#10b981',
+            itmemoPrimaryHover: '#059669',
+            itmemoBg: '#ffffff',
+            itmemoSurface: '#f8fafc',
+            itmemoTextMain: '#0f172a',
+            itmemoTextSub: '#64748b'
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-itmemoBg text-itmemoTextMain font-sans antialiased selection:bg-itmemoPrimary selection:text-white">
+
+  <!-- 헤더 -->
+  <header class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2 group">
+        <span class="w-8 h-8 rounded-lg bg-itmemoPrimary/10 border border-itmemoPrimary/30 flex items-center justify-center text-itmemoPrimary font-mono font-bold text-lg">
+          ⚡
+        </span>
+        <span class="font-mono font-bold text-xl tracking-tight text-itmemoTextMain">
+          IT-MEMO
+        </span>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-itmemoTextSub">
+        <a href="index.html" class="hover:text-itmemoPrimary transition-colors">홈</a>
+        <a href="products.html" class="text-itmemoPrimary font-semibold">전자책/가격</a>
+        <a href="about.html" class="hover:text-itmemoPrimary transition-colors">브랜드 스토리</a>
+        <a href="mypage.html" class="hover:text-itmemoPrimary transition-colors">마이페이지</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <a href="mypage.html" class="text-xs sm:text-sm font-medium text-itmemoTextSub hover:text-itmemoTextMain px-3 py-1.5 rounded-lg hover:bg-slate-50 transition-colors">
+          마이페이지
+        </a>
+        <button onclick="openPaymentModal()" class="btn-lift inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold bg-itmemoPrimary hover:bg-itmemoPrimaryHover text-white px-4 py-2 rounded-lg shadow-sm shadow-emerald-500/20 transition-all">
+          <span>얼리버드 2.9만 소장</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="pt-28 pb-20">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- 제품 헤더 요약 -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-16">
+        <!-- 좌측: 전자책 목업 시각화 -->
+        <div class="lg:col-span-5 text-center">
+          <div class="relative inline-block max-w-sm mx-auto">
+            <div class="absolute -inset-4 bg-emerald-500/10 rounded-3xl blur-2xl pointer-events-none"></div>
+            <!-- 가상 전자책 3D 목업 박스 -->
+            <div class="relative bg-gradient-to-br from-slate-900 to-slate-800 text-white p-8 rounded-2xl shadow-2xl border border-slate-700 text-left aspect-[3/4] flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between text-xs font-mono text-emerald-400 mb-6">
+                  <span>IT-MEMO GUIDEBOOK</span>
+                  <span>VER 2.6</span>
+                </div>
+                <div class="text-xs text-slate-400 font-mono mb-2">PRACTICAL BLUEPRINT</div>
+                <h1 class="text-2xl font-extrabold leading-snug tracking-tight">
+                  퇴근 후 하루 30분,<br>
+                  <span class="text-itmemoPrimary">월 50만 원</span><br>
+                  실전 부업 가이드북
+                </h1>
+                <p class="text-xs text-slate-300 mt-4 leading-relaxed">
+                  직장인을 위한 무자본 지식 파이프라인 공식 & 복사해 쓰는 실무 템플릿 10종
+                </p>
+              </div>
+
+              <div class="pt-6 border-t border-slate-700/60 flex items-center justify-between text-xs font-mono text-slate-400">
+                <span>PDF 130 PAGES</span>
+                <span>⚡ IT-MEMO</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 우측: 핵심 스펙 및 구매 카드 -->
+        <div class="lg:col-span-7 space-y-6">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-itmemoPrimary text-xs font-bold font-mono border border-emerald-200">
+            <span>LIMITED EARLYBIRD 42% OFF</span>
+          </div>
+
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-itmemoTextMain tracking-tight">
+            IT-MEMO 실전 전자책 풀패키지
+          </h2>
+          <p class="text-itmemoTextSub text-base leading-relaxed">
+            비현실적인 월 천만 원 신화 대신, 퇴근 후 30분 만에 따라 할 수 있는 압축 실전서입니다. 
+            단건 결제 한 번으로 평생 소장하시고, 준비된 10종 템플릿으로 오늘 밤 즉시 시작하세요.
+          </p>
+
+          <!-- 가격표 -->
+          <div class="bg-itmemoSurface p-6 rounded-2xl border border-slate-200 flex items-baseline gap-4">
+            <div>
+              <span class="text-xs font-mono text-itmemoTextSub block">얼리버드 특별 분양가</span>
+              <div class="flex items-baseline gap-1 mt-1">
+                <span class="text-4xl font-extrabold text-itmemoTextMain font-mono">29,000</span>
+                <span class="text-sm font-bold text-itmemoTextMain">원</span>
+              </div>
+            </div>
+            <div class="text-slate-400 line-through font-mono text-base">50,000원</div>
+            <div class="ml-auto text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
+              42% 할인 적용 중
+            </div>
+          </div>
+
+          <!-- 포함 내역 리스트 -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-itmemoTextSub">
+            <div class="flex items-center gap-2">
+              <i data-lucide="check-circle" class="w-4 h-4 text-itmemoPrimary"></i>
+              <span>정규 PDF 가이드북 (총 130페이지)</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="check-circle" class="w-4 h-4 text-itmemoPrimary"></i>
+              <span>복사해 쓰는 노션/엑셀 템플릿 10종</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="check-circle" class="w-4 h-4 text-itmemoPrimary"></i>
+              <span>결제 즉시 평생 소장 & 재다운로드</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="check-circle" class="w-4 h-4 text-itmemoPrimary"></i>
+              <span>구매자 전용 1:1 Q&A 오픈채팅권</span>
+            </div>
+          </div>
+
+          <div class="pt-4 flex flex-col sm:flex-row gap-4">
+            <button onclick="openPaymentModal()" class="btn-lift flex-1 inline-flex items-center justify-center gap-2 bg-itmemoPrimary hover:bg-itmemoPrimaryHover text-white font-bold py-4 rounded-xl text-base shadow-lg shadow-emerald-500/25 transition-all">
+              <i data-lucide="credit-card" class="w-5 h-5"></i>
+              <span>지금 29,000원에 평생 소장하기</span>
+            </button>
+            <a href="index.html#free-lead" class="inline-flex items-center justify-center px-6 py-4 rounded-xl border border-slate-200 text-sm font-semibold text-itmemoTextSub hover:text-itmemoTextMain hover:bg-slate-50 transition-colors">
+              무료 요약본 먼저 받기
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 동봉된 10종 실전 템플릿 안내 -->
+      <section class="py-12 border-t border-slate-200">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <span class="font-mono text-xs uppercase tracking-wider text-itmemoPrimary font-bold bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/50">
+            INCLUDED TEMPLATES
+          </span>
+          <h3 class="text-2xl font-bold text-itmemoTextMain mt-3">
+            함께 제공되는 실무 치트키 템플릿 10종
+          </h3>
+          <p class="text-itmemoTextSub text-sm mt-2">
+            지루하게 백지부터 만들 필요 없습니다. 복사해서 내 내용만 채워 넣으면 세팅이 끝납니다.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="p-4 rounded-xl bg-itmemoSurface border border-slate-200 flex items-start gap-3">
+            <span class="w-6 h-6 rounded bg-emerald-100 text-emerald-800 font-mono text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">01</span>
+            <div>
+              <div class="font-bold text-sm text-itmemoTextMain">직장인 강점·경험 발굴 워크시트</div>
+              <div class="text-xs text-itmemoTextSub mt-0.5">내가 가진 평범한 업무 지식을 30분 만에 판매 가능한 부업 아이템으로 전환</div>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-itmemoSurface border border-slate-200 flex items-start gap-3">
+            <span class="w-6 h-6 rounded bg-emerald-100 text-emerald-800 font-mono text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">02</span>
+            <div>
+              <div class="font-bold text-sm text-itmemoTextMain">고단가 전자책 30분 표지 목업 템플릿</div>
+              <div class="text-xs text-itmemoTextSub mt-0.5">디자인 감각이 없어도 캔버스에 글자만 넣으면 끝나는 3D 표지 템플릿</div>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-itmemoSurface border border-slate-200 flex items-start gap-3">
+            <span class="w-6 h-6 rounded bg-emerald-100 text-emerald-800 font-mono text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">03</span>
+            <div>
+              <div class="font-bold text-sm text-itmemoTextMain">구매 전환율 2배 상세페이지 카피 라이팅 뼈대</div>
+              <div class="text-xs text-itmemoTextSub mt-0.5">의심 많은 구매자를 설득하는 검증된 8단계 세일즈 문장 공식</div>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-itmemoSurface border border-slate-200 flex items-start gap-3">
+            <span class="w-6 h-6 rounded bg-emerald-100 text-emerald-800 font-mono text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">04</span>
+            <div>
+              <div class="font-bold text-sm text-itmemoTextMain">고객 문의 90% 줄여주는 사전 방어 FAQ 모음집</div>
+              <div class="text-xs text-itmemoTextSub mt-0.5">야근 중에도 질문 없이 자동으로 결제되게 만드는 필수 안내 템플릿</div>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-itmemoSurface border border-slate-200 flex items-start gap-3">
+            <span class="w-6 h-6 rounded bg-emerald-100 text-emerald-800 font-mono text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">05</span>
+            <div>
+              <div class="font-bold text-sm text-itmemoTextMain">월 50만 원 수익 추적 자동 계산 엑셀</div>
+              <div class="text-xs text-itmemoTextSub mt-0.5">매일 정산 내역과 누적 부수입을 한눈에 시각화하는 자동 장부</div>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-itmemoSurface border border-slate-200 flex items-start gap-3">
+            <span class="w-6 h-6 rounded bg-emerald-100 text-emerald-800 font-mono text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">06~10</span>
+            <div>
+              <div class="font-bold text-sm text-itmemoTextMain">기타 실무 노션 템플릿 5종 추가 제공</div>
+              <div class="text-xs text-itmemoTextSub mt-0.5">후기 수집 설문지 폼, 이메일 발송 양식, 저작권 자가진단표 등</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 추천 대상 / 비추천 대상 (신뢰 필터) -->
+      <section class="py-12 border-t border-slate-200">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="p-8 rounded-2xl bg-emerald-50/50 border border-emerald-200">
+            <h4 class="font-bold text-base text-emerald-900 mb-4 flex items-center gap-2">
+              <i data-lucide="thumbs-up" class="w-5 h-5 text-itmemoPrimary"></i>
+              <span>이런 분께는 강력히 추천합니다</span>
+            </h4>
+            <ul class="space-y-2 text-sm text-slate-700">
+              <li class="flex items-start gap-2">✓ 퇴근 후 하루 30분~1시간 정도로 안전하게 월 50만 원 부수입을 만들고 싶은 분</li>
+              <li class="flex items-start gap-2">✓ 초기 자본금 0원으로 위험 부담 없이 지식 비즈니스를 시작하고 싶은 분</li>
+              <li class="flex items-start gap-2">✓ 이론보다 오늘 밤 즉시 써먹을 수 있는 복사 템플릿이 필요한 분</li>
+            </ul>
+          </div>
+
+          <div class="p-8 rounded-2xl bg-slate-100 border border-slate-200">
+            <h4 class="font-bold text-base text-slate-800 mb-4 flex items-center gap-2">
+              <i data-lucide="alert-circle" class="w-5 h-5 text-slate-500"></i>
+              <span>이런 분은 구매를 사양합니다</span>
+            </h4>
+            <ul class="space-y-2 text-sm text-slate-600">
+              <li class="flex items-start gap-2">✕ 하루 10분만 투자하면 자면서도 월 1,000만 원 번다는 요행을 바라시는 분</li>
+              <li class="flex items-start gap-2">✕ 전자책을 읽고 템플릿을 한 번도 열어보지 않을 분</li>
+              <li class="flex items-start gap-2">✕ 이미 수억 원대의 전업 사업체를 운영 중이신 전문 사업가</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- 결제 모달 인클루드 -->
+  <div id="paymentModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative animate-scaleUp">
+      <button onclick="closeModal('paymentModal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-1">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="flex items-center gap-2 mb-4">
+        <span class="w-7 h-7 rounded-lg bg-emerald-50 border border-emerald-200 text-itmemoPrimary flex items-center justify-center font-bold text-sm">⚡</span>
+        <span class="font-mono font-bold text-sm text-itmemoTextMain">IT-MEMO 안전결제</span>
+      </div>
+
+      <h3 class="text-xl font-extrabold text-itmemoTextMain mb-1">
+        퇴근 후 월 50만 원 전자책 풀패키지
+      </h3>
+      <p class="text-xs text-itmemoTextSub mb-6">
+        정규 PDF 130p + 노션/엑셀 실무 치트키 템플릿 10종 포함
+      </p>
+
+      <div class="bg-itmemoSurface p-4 rounded-xl border border-slate-100 mb-6 space-y-2">
+        <div class="flex justify-between text-xs text-itmemoTextSub">
+          <span>정가</span>
+          <span class="line-through font-mono">50,000원</span>
+        </div>
+        <div class="flex justify-between text-xs text-emerald-600 font-semibold">
+          <span>런칭 기념 얼리버드 할인</span>
+          <span class="font-mono">-21,000원</span>
+        </div>
+        <div class="flex justify-between text-base font-bold text-itmemoTextMain pt-2 border-t border-slate-200">
+          <span>최종 결제 금액</span>
+          <span class="text-itmemoPrimary font-mono text-lg">29,000원</span>
+        </div>
+      </div>
+
+      <div class="space-y-2.5">
+        <button onclick="goToSuccessPage()" class="w-full btn-lift flex items-center justify-center gap-2 bg-itmemoPrimary hover:bg-itmemoPrimaryHover text-white font-bold py-3.5 rounded-xl text-sm transition-all shadow-md shadow-emerald-500/20">
+          <i data-lucide="check" class="w-4 h-4"></i>
+          <span>테스트 결제 승인 & 다운로드 체험</span>
+        </button>
+        <button onclick="closeModal('paymentModal')" class="w-full py-2.5 text-xs text-slate-500 hover:text-slate-700 font-medium">
+          다음에 결제하기
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 푸터 -->
+  <footer class="bg-slate-950 text-slate-400 py-12 border-t border-slate-800 text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div>
+        <span class="font-mono font-bold text-white text-base">⚡ IT-MEMO</span>
+        <p class="text-[11px] text-slate-500 mt-1">© 2026 IT-MEMO. All rights reserved.</p>
+      </div>
+      <div class="flex gap-6 text-xs">
+        <a href="index.html" class="hover:text-white transition-colors">홈</a>
+        <a href="products.html" class="hover:text-white transition-colors">전자책/가격</a>
+        <a href="about.html" class="hover:text-white transition-colors">브랜드 스토리</a>
+        <a href="mypage.html" class="hover:text-white transition-colors">마이페이지</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    function goToSuccessPage() {
+      window.location.href = 'payment-success.html';
+    }
+  </script>
+</body>
+</html>

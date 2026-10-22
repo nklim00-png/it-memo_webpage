@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>결제 실패 | IT-MEMO</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            itmemoPrimary: '#10b981',
+            itmemoPrimaryHover: '#059669',
+            itmemoBg: '#ffffff',
+            itmemoSurface: '#f8fafc',
+            itmemoTextMain: '#0f172a',
+            itmemoTextSub: '#64748b'
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-itmemoSurface text-itmemoTextMain font-sans antialiased min-h-screen flex items-center justify-center p-4">
+
+  <div class="max-w-md w-full bg-white rounded-3xl p-8 sm:p-10 shadow-xl border border-slate-200 text-center">
+    <!-- 실패 아이콘 -->
+    <div class="w-16 h-16 rounded-full bg-rose-100 text-rose-600 mx-auto flex items-center justify-center mb-6">
+      <i data-lucide="alert-triangle" class="w-8 h-8"></i>
+    </div>
+
+    <span class="font-mono text-xs font-bold text-rose-600 uppercase tracking-wider bg-rose-50 px-3 py-1 rounded-full border border-rose-200">
+      PAYMENT FAILED
+    </span>
+
+    <h1 class="text-2xl font-extrabold text-itmemoTextMain mt-3 mb-2 tracking-tight">
+      결제가 정상 처리되지 않았습니다.
+    </h1>
+    <p class="text-sm text-itmemoTextSub leading-relaxed mb-6">
+      카드 한도 초과, 잔액 부족, 또는 사용자에 의한 결제 취소로 인해 주문이 완료되지 않았습니다.
+    </p>
+
+    <!-- 에러 정보 박스 -->
+    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-left font-mono text-xs space-y-1.5 mb-6 text-slate-600">
+      <div class="flex justify-between">
+        <span>오류 코드</span>
+        <span class="text-rose-600 font-bold">USER_CANCEL / LIMIT_EXCEED</span>
+      </div>
+      <div class="flex justify-between">
+        <span>금액</span>
+        <span>29,000원</span>
+      </div>
+    </div>
+
+    <!-- 버튼 그룹 -->
+    <div class="space-y-3">
+      <a href="products.html" class="w-full btn-lift flex items-center justify-center gap-2 bg-itmemoPrimary hover:bg-itmemoPrimaryHover text-white font-bold py-3.5 rounded-xl text-sm shadow-md shadow-emerald-500/20 transition-all">
+        <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+        <span>결제 다시 시도하기</span>
+      </a>
+
+      <a href="index.html" class="w-full inline-flex items-center justify-center py-3 text-xs text-slate-500 hover:text-slate-700 font-medium">
+        홈으로 돌아가기
+      </a>
+    </div>
+
+    <p class="text-[11px] text-slate-400 font-mono mt-6">
+      지속적으로 결제에 실패할 경우 <a href="mailto:support@it-memo.kr" class="text-itmemoPrimary underline">고객지원(support@it-memo.kr)</a>으로 문의해 주세요.
+    </p>
+  </div>
+
+  <script>
+    if (window.lucide) lucide.createIcons();
+  </script>
+</body>
+</html>

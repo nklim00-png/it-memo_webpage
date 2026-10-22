@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>브랜드 스토리 | IT-MEMO</title>
+  <meta name="description" content="IT-MEMO가 시작된 이유: 통장 잔고를 보며 부업이 절실했던 평범한 30대 직장인의 진솔한 이야기.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            itmemoPrimary: '#10b981',
+            itmemoPrimaryHover: '#059669',
+            itmemoBg: '#ffffff',
+            itmemoSurface: '#f8fafc',
+            itmemoTextMain: '#0f172a',
+            itmemoTextSub: '#64748b'
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-itmemoBg text-itmemoTextMain font-sans antialiased selection:bg-itmemoPrimary selection:text-white">
+
+  <!-- 헤더 -->
+  <header class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2 group">
+        <span class="w-8 h-8 rounded-lg bg-itmemoPrimary/10 border border-itmemoPrimary/30 flex items-center justify-center text-itmemoPrimary font-mono font-bold text-lg">
+          ⚡
+        </span>
+        <span class="font-mono font-bold text-xl tracking-tight text-itmemoTextMain">
+          IT-MEMO
+        </span>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-itmemoTextSub">
+        <a href="index.html" class="hover:text-itmemoPrimary transition-colors">홈</a>
+        <a href="products.html" class="hover:text-itmemoPrimary transition-colors">전자책/가격</a>
+        <a href="about.html" class="text-itmemoPrimary font-semibold">브랜드 스토리</a>
+        <a href="mypage.html" class="hover:text-itmemoPrimary transition-colors">마이페이지</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <a href="mypage.html" class="text-xs sm:text-sm font-medium text-itmemoTextSub hover:text-itmemoTextMain px-3 py-1.5 rounded-lg hover:bg-slate-50 transition-colors">
+          마이페이지
+        </a>
+        <a href="products.html" class="btn-lift inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold bg-itmemoPrimary hover:bg-itmemoPrimaryHover text-white px-4 py-2 rounded-lg shadow-sm shadow-emerald-500/20 transition-all">
+          <span>얼리버드 2.9만 소장</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="pt-28 pb-20">
+    <!-- 스토리 히어로 -->
+    <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 text-center">
+      <span class="font-mono text-xs uppercase tracking-wider text-itmemoPrimary font-bold bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/50">
+        ABOUT IT-MEMO
+      </span>
+      <h1 class="text-3xl sm:text-5xl font-extrabold text-itmemoTextMain mt-4 tracking-tight leading-tight">
+        "부업이 절실했던 평범한 대리가<br>
+        직접 겪은 1년의 기록"
+      </h1>
+      <p class="text-itmemoTextSub text-base sm:text-lg mt-4 max-w-2xl mx-auto leading-relaxed">
+        월 천만 원의 환상 대신, 매달 통장의 숨통을 틔워준 확실한 50만 원의 파이프라인. IT-MEMO는 그 절실했던 고민에서 시작되었습니다.
+      </p>
+    </section>
+
+    <!-- 스토리 본문 카드 -->
+    <section class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="bg-white rounded-3xl p-8 sm:p-12 border border-slate-200/80 shadow-sm space-y-8 leading-relaxed text-slate-700 text-base">
+        <div>
+          <h2 class="text-xl font-bold text-itmemoTextMain mb-3 flex items-center gap-2">
+            <span class="w-7 h-7 rounded-lg bg-emerald-50 text-itmemoPrimary font-mono flex items-center justify-center text-sm font-bold">1</span>
+            <span>월급날이 가장 허무했던 3년 전</span>
+          </h2>
+          <p>
+            새벽같이 출근해 야근을 마치고 돌아오는 길, 스마트폰 알림으로 뜬 월급 입금 알림은 불과 반나절 만에 카드값, 대출 이자, 공과금으로 스쳐 지나갔습니다.
+            친구의 결혼식 축의금 봉투 앞에서도 망설여지고, 부모님 생신 선물 하나에도 계산기를 두드려야 했던 제 모습이 너무나 초라했습니다.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-xl font-bold text-itmemoTextMain mb-3 flex items-center gap-2">
+            <span class="w-7 h-7 rounded-lg bg-emerald-50 text-itmemoPrimary font-mono flex items-center justify-center text-sm font-bold">2</span>
+            <span>유튜브 '월 1,000만 원 부업'의 배신</span>
+          </h2>
+          <p>
+            간절한 마음에 부업 관련 영상과 강의를 닥치는 대로 결제했습니다. 하지만 현실은 차가웠습니다.
+            수천만 원의 사입 자본이 필요하거나, 하루 4~5시간씩 매달려야 하는 전업 투자자용 방법들이었습니다. 
+            야근 후 파김치가 된 직장인이 따라 할 수 있는 것은 단 하나도 없었습니다.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-xl font-bold text-itmemoTextMain mb-3 flex items-center gap-2">
+            <span class="w-7 h-7 rounded-lg bg-emerald-50 text-itmemoPrimary font-mono flex items-center justify-center text-sm font-bold">3</span>
+            <span>직장인을 위한 단 하나의 공식: '하루 30분, 월 50만 원'</span>
+          </h2>
+          <p>
+            생각을 완전히 바꾸었습니다. <strong>"대박을 노리지 말자. 매달 내 생활비에 여유를 줄 확실한 50만 원부터 만들자."</strong><br>
+            초기 자본이 들지 않는 무자본 디지털 지식 모델을 택했고, 출퇴근길 지하철 15분, 귀가 후 샤워 전 15분으로 모든 실행 과정을 쪼갰습니다.
+            그리고 첫 달 34만 원, 둘째 달 52만 원이 통장에 찍혔을 때의 그 짜릿한 전율은 아직도 잊히지 않습니다.
+          </p>
+        </div>
+
+        <!-- 계좌 타임라인 시각화 박스 -->
+        <div class="bg-itmemoSurface p-6 rounded-2xl border border-slate-200">
+          <div class="font-mono text-xs font-bold text-itmemoPrimary mb-3 uppercase tracking-wider">
+            REAL TIMELINE & EARNINGS
+          </div>
+          <div class="space-y-3 font-mono text-xs">
+            <div class="flex justify-between items-center py-2 border-b border-slate-200">
+              <span class="text-slate-500">1개월차 (세팅 및 첫 상품 등록)</span>
+              <span class="font-bold text-itmemoTextMain">첫 정산 348,000원</span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-slate-200">
+              <span class="text-slate-500">2개월차 (자동화 템플릿 배포)</span>
+              <span class="font-bold text-emerald-600">누적 524,000원</span>
+            </div>
+            <div class="flex justify-between items-center py-2">
+              <span class="text-slate-500">현재 (IT-MEMO 시스템 확립)</span>
+              <span class="font-bold text-itmemoPrimary">매달 안정적 50~70만 원 자동 입금</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="text-xl font-bold text-itmemoTextMain mb-3 flex items-center gap-2">
+            <span class="w-7 h-7 rounded-lg bg-emerald-50 text-itmemoPrimary font-mono flex items-center justify-center text-sm font-bold">4</span>
+            <span>IT-MEMO가 여러분께 드리는 약속</span>
+          </h2>
+          <p>
+            저희는 과장하지 않습니다. 다만 제가 겪었던 수많은 시행착오와 삽질을 여러분은 겪지 않도록, 
+            가장 안전하고 검증된 고속도로만을 정직하게 정리해 드립니다. 
+            여러분의 오늘 밤 퇴근길이 어제보다 조금은 더 설레기를 진심으로 바랍니다.
+          </p>
+        </div>
+
+        <div class="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <div class="font-bold text-itmemoTextMain">IT-MEMO 디렉터 배상</div>
+            <div class="text-xs text-itmemoTextSub">평범한 30대 직장인이자 부업 연구자</div>
+          </div>
+          <a href="products.html" class="btn-lift inline-flex items-center gap-2 bg-itmemoPrimary hover:bg-itmemoPrimaryHover text-white text-sm font-semibold px-6 py-3 rounded-xl shadow-md shadow-emerald-500/20">
+            <span>실전 가이드북 자세히 보기</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 푸터 -->
+  <footer class="bg-slate-950 text-slate-400 py-12 border-t border-slate-800 text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div>
+        <span class="font-mono font-bold text-white text-base">⚡ IT-MEMO</span>
+        <p class="text-[11px] text-slate-500 mt-1">© 2026 IT-MEMO. All rights reserved.</p>
+      </div>
+      <div class="flex gap-6 text-xs">
+        <a href="index.html" class="hover:text-white transition-colors">홈</a>
+        <a href="products.html" class="hover:text-white transition-colors">전자책/가격</a>
+        <a href="mypage.html" class="hover:text-white transition-colors">마이페이지</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    if (window.lucide) lucide.createIcons();
+  </script>
+</body>
+</html>

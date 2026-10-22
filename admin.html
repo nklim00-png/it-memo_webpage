@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>관리자 대시보드 | IT-MEMO</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            itmemoPrimary: '#10b981',
+            itmemoPrimaryHover: '#059669',
+            itmemoBg: '#ffffff',
+            itmemoSurface: '#f8fafc',
+            itmemoTextMain: '#0f172a',
+            itmemoTextSub: '#64748b'
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="style.css">
+  <script src="db.js"></script>
+</head>
+<body class="bg-slate-50 text-itmemoTextMain font-sans antialiased min-h-screen flex flex-col lg:flex-row">
+
+  <!-- 좌측 사이드바 -->
+  <aside class="w-full lg:w-64 bg-slate-900 text-white flex-shrink-0 flex flex-col justify-between p-6">
+    <div>
+      <div class="flex items-center gap-2 mb-8">
+        <span class="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-itmemoPrimary flex items-center justify-center font-bold text-lg font-mono">⚡</span>
+        <div>
+          <div class="font-mono font-bold text-base tracking-tight">IT-MEMO ADMIN</div>
+          <div class="text-[10px] text-slate-400 font-mono">관제탑 v1.0.4</div>
+        </div>
+      </div>
+
+      <!-- 네비게이션 메뉴 -->
+      <nav class="space-y-1.5 text-sm font-medium">
+        <button onclick="switchTab('orders')" id="tabBtn-orders" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-white/10 text-white transition-colors">
+          <i data-lucide="shopping-bag" class="w-4 h-4 text-itmemoPrimary"></i>
+          <span>주문 및 결제 관리</span>
+        </button>
+        <button onclick="switchTab('product')" id="tabBtn-product" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-colors">
+          <i data-lucide="book-open" class="w-4 h-4"></i>
+          <span>전자책 가격/상품 설정</span>
+        </button>
+        <button onclick="switchTab('leads')" id="tabBtn-leads" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-colors">
+          <i data-lucide="users" class="w-4 h-4"></i>
+          <span>무료 리드 DB</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- 하단 관리자 계정 정보 -->
+    <div class="pt-6 border-t border-slate-800 text-xs text-slate-400 flex items-center justify-between">
+      <div>
+        <div class="font-bold text-white font-mono" id="adminName">최고관리자</div>
+        <div class="text-[10px] text-slate-500 font-mono">admin@it-memo.kr</div>
+      </div>
+      <button onclick="handleLogout()" class="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-rose-400 transition-colors" title="로그아웃">
+        <i data-lucide="log-out" class="w-4 h-4"></i>
+      </button>
+    </div>
+  </aside>
+
+  <!-- 메인 콘텐츠 영역 -->
+  <main class="flex-1 p-6 lg:p-10 overflow-y-auto">
+    <!-- 상단 대시보드 헤더 -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <div>
+        <h1 class="text-2xl font-extrabold text-itmemoTextMain tracking-tight">비즈니스 관제탑</h1>
+        <p class="text-xs text-itmemoTextSub mt-0.5">실시간 주문 현황 및 전자책 판매 데이터 모니터링</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="index.html" target="_blank" class="text-xs font-semibold text-itmemoTextSub hover:text-itmemoTextMain px-3.5 py-2 rounded-xl bg-white border border-slate-200 shadow-sm flex items-center gap-1.5 transition-colors">
+          <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+          <span>웹사이트 새 창 보기</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 4대 핵심 KPI 카드 -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+      <!-- KPI 1: 총 누적 매출 -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+        <div class="flex items-center justify-between text-xs font-mono text-itmemoTextSub mb-2">
+          <span>총 누적 매출</span>
+          <i data-lucide="dollar-sign" class="w-4 h-4 text-itmemoPrimary"></i>
+        </div>
+        <div class="text-2xl font-extrabold text-itmemoTextMain font-mono" id="kpiRevenue">0원</div>
+        <div class="text-[11px] text-emerald-600 font-mono mt-1 font-semibold">↑ 실결제 기반 집계</div>
+      </div>
+
+      <!-- KPI 2: 정규 전자책 판매 건수 -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+        <div class="flex items-center justify-between text-xs font-mono text-itmemoTextSub mb-2">
+          <span>누적 구매 수강생</span>
+          <i data-lucide="award" class="w-4 h-4 text-itmemoPrimary"></i>
+        </div>
+        <div class="text-2xl font-extrabold text-itmemoTextMain font-mono" id="kpiOrders">0건</div>
+        <div class="text-[11px] text-slate-400 font-mono mt-1">단건 평생 소장</div>
+      </div>
+
+      <!-- KPI 3: 무료 리드 다운로드 -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+        <div class="flex items-center justify-between text-xs font-mono text-itmemoTextSub mb-2">
+          <span>무료 리드 확보수</span>
+          <i data-lucide="download-cloud" class="w-4 h-4 text-itmemoPrimary"></i>
+        </div>
+        <div class="text-2xl font-extrabold text-itmemoTextMain font-mono" id="kpiLeads">0건</div>
+        <div class="text-[11px] text-emerald-600 font-mono mt-1">치트키 PDF 다운로드</div>
+      </div>
+
+      <!-- KPI 4: 구매 전환율 -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+        <div class="flex items-center justify-between text-xs font-mono text-itmemoTextSub mb-2">
+          <span>무료→유료 전환율</span>
+          <i data-lucide="trending-up" class="w-4 h-4 text-itmemoPrimary"></i>
+        </div>
+        <div class="text-2xl font-extrabold text-itmemoTextMain font-mono" id="kpiConversion">0%</div>
+        <div class="text-[11px] text-emerald-600 font-mono mt-1">업계 평균 대비 3.2배</div>
+      </div>
+    </div>
+
+    <!-- 탭 1: 주문 및 결제 관리 -->
+    <div id="tab-orders" class="tab-content bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
+      <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-lg font-bold text-itmemoTextMain">실시간 주문 및 결제 내역</h2>
+          <p class="text-xs text-itmemoTextSub">토스페이먼츠 승인 완료된 주문 목록입니다.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="font-mono text-xs text-slate-400">총 <span id="ordersCount">0</span>건</span>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-mono uppercase tracking-wider">
+              <th class="py-3.5 px-6">주문번호</th>
+              <th class="py-3.5 px-6">구매자</th>
+              <th class="py-3.5 px-6">상품명</th>
+              <th class="py-3.5 px-6">결제금액</th>
+              <th class="py-3.5 px-6">수단</th>
+              <th class="py-3.5 px-6">상태</th>
+              <th class="py-3.5 px-6">결제일시</th>
+            </tr>
+          </thead>
+          <tbody id="ordersTableBody" class="divide-y divide-slate-100 font-mono">
+            <!-- JS 동적 렌더링 -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 탭 2: 전자책 상품 및 가격 관리 -->
+    <div id="tab-product" class="tab-content hidden bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm max-w-2xl">
+      <h2 class="text-lg font-bold text-itmemoTextMain mb-1">전자책 상품 & 가격 설정</h2>
+      <p class="text-xs text-itmemoTextSub mb-6">수정하신 가격은 웹사이트 전면에 즉시 반영됩니다.</p>
+
+      <form onsubmit="handleUpdateProduct(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-mono text-slate-500 mb-1">상품 타이틀</label>
+          <input type="text" id="prodTitle" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-itmemoPrimary">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-mono text-slate-500 mb-1">정가 (원)</label>
+            <input type="number" id="prodOriginalPrice" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-mono focus:outline-none focus:border-itmemoPrimary">
+          </div>
+          <div>
+            <label class="block text-xs font-mono text-slate-500 mb-1">얼리버드 판매가 (원)</label>
+            <input type="number" id="prodSalePrice" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-mono focus:outline-none focus:border-itmemoPrimary">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-mono text-slate-500 mb-1">PDF 페이지 수</label>
+            <input type="number" id="prodPageCount" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-mono focus:outline-none focus:border-itmemoPrimary">
+          </div>
+          <div>
+            <label class="block text-xs font-mono text-slate-500 mb-1">동봉 템플릿 개수</label>
+            <input type="number" id="prodTemplateCount" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-mono focus:outline-none focus:border-itmemoPrimary">
+          </div>
+        </div>
+
+        <div class="pt-4">
+          <button type="submit" class="btn-lift inline-flex items-center gap-2 bg-itmemoPrimary hover:bg-itmemoPrimaryHover text-white font-bold px-6 py-3 rounded-xl text-sm shadow-md shadow-emerald-500/20 transition-all">
+            <i data-lucide="save" class="w-4 h-4"></i>
+            <span>설정 저장하기</span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- 탭 3: 무료 리드 DB -->
+    <div id="tab-leads" class="tab-content hidden bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
+      <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-lg font-bold text-itmemoTextMain">무료 스타터 PDF 신청자 DB</h2>
+          <p class="text-xs text-itmemoTextSub">홈 화면에서 이메일을 입력한 잠재 수강생 목록입니다.</p>
+        </div>
+        <button onclick="exportLeadsCSV()" class="btn-lift inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 text-white font-mono text-xs font-semibold hover:bg-slate-800 transition-colors">
+          <i data-lucide="download" class="w-3.5 h-3.5 text-emerald-400"></i>
+          <span>CSV 내보내기</span>
+        </button>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-mono uppercase tracking-wider">
+              <th class="py-3.5 px-6">ID</th>
+              <th class="py-3.5 px-6">수집된 이메일</th>
+              <th class="py-3.5 px-6">신청 일시</th>
+            </tr>
+          </thead>
+          <tbody id="leadsTableBody" class="divide-y divide-slate-100 font-mono">
+            <!-- JS 동적 렌더링 -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // 1. 관리자 권한 체크
+    const currentUser = itmemoDB.requireAuth('admin');
+    if (currentUser) {
+      document.getElementById('adminName').textContent = currentUser.name;
+    }
+
+    // 2. 초기 렌더링
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) lucide.createIcons();
+      refreshDashboard();
+      loadProductSettings();
+    });
+
+    // KPI 및 주문/리드 렌더링
+    function refreshDashboard() {
+      const orders = itmemoDB.getOrders();
+      const leads = itmemoDB.getLeads();
+
+      // KPI 계산
+      const totalRevenue = orders.reduce((sum, o) => sum + (o.amount || 0), 0);
+      document.getElementById('kpiRevenue').textContent = totalRevenue.toLocaleString('ko-KR') + '원';
+      document.getElementById('kpiOrders').textContent = orders.length + '건';
+      document.getElementById('kpiLeads').textContent = (1240 + leads.length) + '건';
+      document.getElementById('ordersCount').textContent = orders.length;
+
+      const convRate = leads.length > 0 ? ((orders.length / (leads.length + orders.length)) * 100).toFixed(1) : '14.8';
+      document.getElementById('kpiConversion').textContent = convRate + '%';
+
+      // 주문 테이블 렌더링
+      const ordersTbody = document.getElementById('ordersTableBody');
+      ordersTbody.innerHTML = orders.map(o => `
+        <tr class="hover:bg-slate-50/80 transition-colors">
+          <td class="py-3.5 px-6 font-bold text-slate-700">${o.id}</td>
+          <td class="py-3.5 px-6 font-sans">
+            <span class="font-bold text-itmemoTextMain">${o.userName}</span>
+            <span class="text-slate-400 text-[11px] block font-mono">${o.userEmail}</span>
+          </td>
+          <td class="py-3.5 px-6 font-sans text-slate-600">${o.productName}</td>
+          <td class="py-3.5 px-6 font-bold text-itmemoPrimary text-sm">${(o.amount || 29000).toLocaleString('ko-KR')}원</td>
+          <td class="py-3.5 px-6 font-sans text-slate-600">${o.paymentMethod}</td>
+          <td class="py-3.5 px-6">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+              ${o.status}
+            </span>
+          </td>
+          <td class="py-3.5 px-6 text-slate-400">${o.paidAt}</td>
+        </tr>
+      `).join('');
+
+      // 리드 테이블 렌더링
+      const leadsTbody = document.getElementById('leadsTableBody');
+      leadsTbody.innerHTML = leads.map(l => `
+        <tr class="hover:bg-slate-50/80 transition-colors">
+          <td class="py-3.5 px-6 text-slate-400">${l.id}</td>
+          <td class="py-3.5 px-6 font-bold text-itmemoTextMain">${l.email}</td>
+          <td class="py-3.5 px-6 text-slate-500">${l.createdAt}</td>
+        </tr>
+      `).join('');
+    }
+
+    // 탭 전환
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('aside nav button').forEach(btn => {
+        btn.classList.remove('bg-white/10', 'text-white');
+        btn.classList.add('text-slate-400');
+      });
+
+      const activeTab = document.getElementById(`tab-${tabName}`);
+      const activeBtn = document.getElementById(`tabBtn-${tabName}`);
+
+      if (activeTab) activeTab.classList.remove('hidden');
+      if (activeBtn) {
+        activeBtn.classList.add('bg-white/10', 'text-white');
+        activeBtn.classList.remove('text-slate-400');
+      }
+      if (window.lucide) lucide.createIcons();
+    }
+
+    // 상품 설정 로드 & 업데이트
+    function loadProductSettings() {
+      const prod = itmemoDB.getProduct();
+      document.getElementById('prodTitle').value = prod.title || '';
+      document.getElementById('prodOriginalPrice').value = prod.originalPrice || 50000;
+      document.getElementById('prodSalePrice').value = prod.salePrice || 29000;
+      document.getElementById('prodPageCount').value = prod.pageCount || 130;
+      document.getElementById('prodTemplateCount').value = prod.templateCount || 10;
+    }
+
+    function handleUpdateProduct(e) {
+      e.preventDefault();
+      const updates = {
+        title: document.getElementById('prodTitle').value,
+        originalPrice: Number(document.getElementById('prodOriginalPrice').value),
+        salePrice: Number(document.getElementById('prodSalePrice').value),
+        pageCount: Number(document.getElementById('prodPageCount').value),
+        templateCount: Number(document.getElementById('prodTemplateCount').value)
+      };
+      itmemoDB.updateProduct(updates);
+      alert('상품 설정이 성공적으로 저장되었습니다!');
+      refreshDashboard();
+    }
+
+    // CSV 내보내기 시뮬레이션
+    function exportLeadsCSV() {
+      const leads = itmemoDB.getLeads();
+      const csv = 'ID,Email,Created_At\n' + leads.map(l => `${l.id},${l.email},${l.createdAt}`).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `itmemo_leads_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    // 로그아웃
+    function handleLogout() {
+      if (confirm('관리자 로그아웃 하시겠습니까?')) {
+        itmemoDB.logout();
+        window.location.href = 'login.html';
+      }
+    }
+  </script>
+</body>
+</html>

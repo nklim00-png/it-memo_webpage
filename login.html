@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>로그인 | IT-MEMO</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            itmemoPrimary: '#10b981',
+            itmemoPrimaryHover: '#059669',
+            itmemoBg: '#ffffff',
+            itmemoSurface: '#f8fafc',
+            itmemoTextMain: '#0f172a',
+            itmemoTextSub: '#64748b'
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="style.css">
+  <script src="db.js"></script>
+</head>
+<body class="bg-itmemoSurface text-itmemoTextMain font-sans antialiased min-h-screen flex items-center justify-center p-4">
+
+  <div class="max-w-md w-full bg-white rounded-3xl p-8 sm:p-10 shadow-xl border border-slate-200">
+    <!-- 로고 -->
+    <div class="text-center mb-8">
+      <a href="index.html" class="inline-flex items-center gap-2 group mb-2">
+        <span class="w-9 h-9 rounded-xl bg-itmemoPrimary/10 border border-itmemoPrimary/30 flex items-center justify-center text-itmemoPrimary font-mono font-bold text-xl">
+          ⚡
+        </span>
+        <span class="font-mono font-bold text-2xl tracking-tight text-itmemoTextMain">
+          IT-MEMO
+        </span>
+      </a>
+      <p class="text-xs text-itmemoTextSub mt-1">전자책 열람 및 마이페이지 / 관리자 로그인</p>
+    </div>
+
+    <!-- 간편 데모 로그인 버튼 (체험용) -->
+    <div class="mb-6 p-4 rounded-2xl bg-emerald-50/60 border border-emerald-200/80">
+      <div class="text-xs font-bold text-emerald-800 mb-2 flex items-center gap-1.5">
+        <i data-lucide="sparkles" class="w-4 h-4 text-itmemoPrimary"></i>
+        <span>1초 데모 계정 로그인</span>
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <button onclick="demoLogin('admin')" class="py-2 px-3 rounded-xl bg-slate-900 text-white font-mono text-xs font-semibold hover:bg-slate-800 transition-colors">
+          관리자(Admin) 로그인
+        </button>
+        <button onclick="demoLogin('user')" class="py-2 px-3 rounded-xl bg-itmemoPrimary text-white font-mono text-xs font-semibold hover:bg-itmemoPrimaryHover transition-colors">
+          수강생(User) 로그인
+        </button>
+      </div>
+    </div>
+
+    <!-- 일반 로그인 폼 -->
+    <form onsubmit="handleFormLogin(event)" class="space-y-4">
+      <div>
+        <label for="loginEmail" class="block text-xs font-mono text-slate-500 mb-1">이메일 주소</label>
+        <input type="email" id="loginEmail" required placeholder="name@company.com" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-itmemoPrimary focus:ring-1 focus:ring-itmemoPrimary transition-all">
+      </div>
+
+      <div>
+        <label for="loginPassword" class="block text-xs font-mono text-slate-500 mb-1">비밀번호</label>
+        <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-itmemoPrimary focus:ring-1 focus:ring-itmemoPrimary transition-all">
+      </div>
+
+      <div id="loginError" class="hidden text-xs text-rose-500 font-medium"></div>
+
+      <button type="submit" class="w-full btn-lift flex items-center justify-center gap-2 bg-itmemoTextMain hover:bg-slate-800 text-white font-semibold py-3.5 rounded-xl text-sm transition-all shadow-md">
+        <span>로그인하기</span>
+        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+      </button>
+    </form>
+
+    <!-- 하단 회원가입 링크 -->
+    <div class="mt-6 pt-6 border-t border-slate-100 flex items-center justify-between text-xs text-itmemoTextSub">
+      <a href="index.html" class="hover:text-itmemoTextMain transition-colors">← 홈으로 이동</a>
+      <a href="register.html" class="text-itmemoPrimary font-semibold hover:underline">회원가입하기</a>
+    </div>
+  </div>
+
+  <script>
+    if (window.lucide) lucide.createIcons();
+
+    function handleFormLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+      const errorDiv = document.getElementById('loginError');
+
+      const result = itmemoDB.login(email, password);
+      if (result.success) {
+        routeUser(result.user);
+      } else {
+        errorDiv.textContent = result.message;
+        errorDiv.classList.remove('hidden');
+      }
+    }
+
+    function demoLogin(type) {
+      if (type === 'admin') {
+        const result = itmemoDB.login('admin@it-memo.kr', 'admin1234');
+        routeUser(result.user);
+      } else {
+        const result = itmemoDB.login('user@company.com', 'user1234');
+        routeUser(result.user);
+      }
+    }
+
+    function routeUser(user) {
+      if (user.role === 'admin') {
+        window.location.href = 'admin.html';
+      } else {
+        window.location.href = 'mypage.html';
+      }
+    }
+  </script>
+</body>
+</html>

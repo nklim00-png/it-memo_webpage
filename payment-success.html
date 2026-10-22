@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>결제 완료 | IT-MEMO</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            itmemoPrimary: '#10b981',
+            itmemoPrimaryHover: '#059669',
+            itmemoBg: '#ffffff',
+            itmemoSurface: '#f8fafc',
+            itmemoTextMain: '#0f172a',
+            itmemoTextSub: '#64748b'
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-itmemoSurface text-itmemoTextMain font-sans antialiased min-h-screen flex items-center justify-center p-4">
+
+  <div class="max-w-lg w-full bg-white rounded-3xl p-8 sm:p-10 shadow-xl border border-slate-200 text-center">
+    <!-- 성공 뱃지 애니메이션 -->
+    <div class="w-16 h-16 rounded-full bg-emerald-100 text-itmemoPrimary mx-auto flex items-center justify-center mb-6">
+      <i data-lucide="check" class="w-8 h-8 stroke-[3]"></i>
+    </div>
+
+    <span class="font-mono text-xs font-bold text-itmemoPrimary uppercase tracking-wider bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+      PAYMENT CONFIRMED
+    </span>
+
+    <h1 class="text-2xl sm:text-3xl font-extrabold text-itmemoTextMain mt-3 mb-2 tracking-tight">
+      결제가 정상 승인되었습니다!
+    </h1>
+    <p class="text-sm text-itmemoTextSub leading-relaxed mb-8">
+      퇴근 후 첫걸음을 응원합니다. 아래 버튼을 눌러 전자책과 템플릿을 즉시 다운로드하세요.
+    </p>
+
+    <!-- 주문 상세 영수증 박스 -->
+    <div class="bg-itmemoSurface p-5 rounded-2xl border border-slate-200 text-left font-mono text-xs space-y-2.5 mb-8">
+      <div class="flex justify-between">
+        <span class="text-slate-400">주문 상품</span>
+        <span class="font-bold text-itmemoTextMain font-sans">IT-MEMO 실전 전자책 풀패키지</span>
+      </div>
+      <div class="flex justify-between">
+        <span class="text-slate-400">주문 번호</span>
+        <span class="text-slate-700">ITMEMO-20261022-9842</span>
+      </div>
+      <div class="flex justify-between">
+        <span class="text-slate-400">결제 수단</span>
+        <span class="text-slate-700 font-sans">토스페이먼츠 간편결제</span>
+      </div>
+      <div class="flex justify-between pt-2.5 border-t border-slate-200 text-sm font-bold">
+        <span class="text-itmemoTextMain font-sans">최종 결제 금액</span>
+        <span class="text-itmemoPrimary">29,000원</span>
+      </div>
+    </div>
+
+    <!-- 다운로드 버튼 그룹 -->
+    <div class="space-y-3">
+      <button onclick="downloadBook()" class="w-full btn-lift flex items-center justify-center gap-2 bg-itmemoPrimary hover:bg-itmemoPrimaryHover text-white font-bold py-4 rounded-xl text-base shadow-lg shadow-emerald-500/25 transition-all">
+        <i data-lucide="download" class="w-5 h-5"></i>
+        <span>PDF 가이드북 즉시 다운로드 (130p)</span>
+      </button>
+
+      <button onclick="downloadTemplates()" class="w-full btn-lift flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-itmemoTextMain border border-slate-200 font-semibold py-3.5 rounded-xl text-sm transition-all">
+        <i data-lucide="file-spreadsheet" class="w-4 h-4 text-itmemoPrimary"></i>
+        <span>동봉 실전 템플릿 10종 패키지 받기</span>
+      </button>
+    </div>
+
+    <!-- 이메일 보관 안내 -->
+    <p class="text-xs text-slate-400 font-mono mt-6 leading-relaxed">
+      * 가입하신 이메일로도 결제 영수증 및 고유 다운로드 링크가 발송되었습니다.<br>
+      언제든 <a href="mypage.html" class="text-itmemoPrimary underline font-semibold">마이페이지</a>에서 평생 다시 받으실 수 있습니다.
+    </p>
+
+    <div class="mt-8 pt-6 border-t border-slate-100 flex items-center justify-center gap-6 text-xs text-itmemoTextSub">
+      <a href="index.html" class="hover:text-itmemoTextMain transition-colors">홈으로 이동</a>
+      <span>&bull;</span>
+      <a href="mypage.html" class="hover:text-itmemoTextMain transition-colors">마이페이지 바로가기</a>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    if (window.lucide) lucide.createIcons();
+
+    function downloadBook() {
+      triggerDummyDownload('IT-MEMO_퇴근후_월50만원_실전가이드북_정규본.pdf');
+      showToast('정규 전자책 PDF 다운로드가 시작되었습니다.');
+    }
+    function downloadTemplates() {
+      triggerDummyDownload('IT-MEMO_실전_치트키_템플릿_10종_패키지.zip');
+      showToast('실전 템플릿 10종 패키지 다운로드가 시작되었습니다.');
+    }
+  </script>
+</body>
+</html>
