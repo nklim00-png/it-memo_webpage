@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>상품 상세페이지 | IT-MEMO</title>
+  <meta name="description" content="IT-MEMO 실전 부업 콘텐츠 상세 안내">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            itmemoPrimary: '#10b981',
+            itmemoPrimaryHover: '#059669',
+            itmemoBg: '#ffffff',
+            itmemoSurface: '#f8fafc',
+            itmemoTextMain: '#0f172a',
+            itmemoTextSub: '#64748b'
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="style.css">
+  <script src="db.js"></script>
+</head>
+<body class="bg-itmemoBg text-itmemoTextMain font-sans antialiased selection:bg-itmemoPrimary selection:text-white">
+
+  <!-- 상단 네비게이션 헤더 -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-100">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <a href="index.html" class="flex items-center gap-2 group">
+          <span class="w-8 h-8 rounded-lg bg-itmemoPrimary/10 border border-itmemoPrimary/30 flex items-center justify-center text-itmemoPrimary font-mono font-bold text-lg group-hover:scale-105 transition-transform">
+            ⚡
+          </span>
+          <span class="font-mono font-bold text-xl tracking-tight text-itmemoTextMain">
+            IT-MEMO
+          </span>
+        </a>
+        <span class="text-slate-300">|</span>
+        <a href="index.html#products" class="text-xs sm:text-sm font-semibold text-itmemoTextSub hover:text-itmemoPrimary flex items-center gap-1">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i>
+          <span>전체 상품 목록</span>
+        </a>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button onclick="toggleAdminFromDetail()" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 flex items-center gap-1.5 transition-colors">
+          <span>🛠️ 관리자 모드</span>
+        </button>
+        <a href="mypage.html" class="text-xs sm:text-sm font-medium text-itmemoTextSub hover:text-itmemoTextMain px-3 py-1.5 rounded-lg hover:bg-slate-50 transition-colors">
+          마이페이지
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-10" id="detailContainer">
+    <!-- 로딩 스켈레톤 상태 -->
+    <div id="loadingState" class="text-center py-24">
+      <div class="inline-block animate-spin w-8 h-8 border-4 border-itmemoPrimary border-t-transparent rounded-full mb-4"></div>
+      <p class="text-sm text-itmemoTextSub">상품 상세 정보를 불러오는 중입니다...</p>
+    </div>
+
+    <!-- 상품 상세 본문 -->
+    <div id="productContent" class="hidden">
+      <!-- 1. 상품 상단 히어로 정보 (정사각 이미지 + 구매 패널) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start mb-12 pb-12 border-b border-slate-100">
+        <!-- 1:1 정사각 썸네일 (aspect-square object-cover) -->
+        <div class="relative w-full aspect-square bg-slate-100 rounded-2xl overflow-hidden border border-slate-200/80 shadow-sm">
+          <img id="detailImg" src="" alt="상품 썸네일" class="w-full h-full aspect-square object-cover">
+          <span id="detailBadge" class="absolute top-4 left-4 font-mono text-xs font-bold px-3 py-1 rounded-full shadow-sm">
+            전자책
+          </span>
+        </div>
+
+        <!-- 가격 및 구매 옵션 패널 -->
+        <div class="flex flex-col justify-between h-full pt-2">
+          <div>
+            <div class="text-xs font-mono text-itmemoTextSub mb-2" id="detailDate">등록일: 2026-10-22</div>
+            <h1 id="detailTitle" class="text-2xl sm:text-3xl font-extrabold text-itmemoTextMain leading-snug tracking-tight mb-3">
+              상품 제목
+            </h1>
+            <p id="detailSummary" class="text-sm sm:text-base text-itmemoTextSub leading-relaxed mb-6">
+              상품 요약 설명
+            </p>
+
+            <!-- 가격 정보 -->
+            <div class="bg-slate-50 p-5 rounded-xl border border-slate-100 mb-6">
+              <div class="flex items-baseline gap-2 mb-1">
+                <span id="detailOriginalPrice" class="text-sm text-slate-400 line-through font-mono">0원</span>
+                <span id="detailDiscount" class="text-sm font-bold text-rose-500 font-mono">할인</span>
+              </div>
+              <div class="flex items-baseline gap-1">
+                <span id="detailSalePrice" class="text-3xl font-black text-itmemoTextMain font-mono">0원</span>
+                <span class="text-xs text-itmemoTextSub font-medium">(부가세 포함)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- CTA 버튼 그룹 -->
+          <div class="space-y-3">
+            <button id="buyBtn" onclick="handleBuyAction()" class="btn-lift w-full py-4 rounded-xl font-bold text-base text-white bg-itmemoPrimary hover:bg-itmemoPrimaryHover shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 transition-all">
+              <i data-lucide="zap" class="w-5 h-5 text-emerald-200"></i>
+              <span id="buyBtnText">지금 바로 소장하기</span>
+            </button>
+            <div class="flex items-center justify-center gap-4 text-xs text-slate-400 font-mono">
+              <span class="flex items-center gap-1">
+                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-itmemoPrimary"></i>
+                <span>안전 결제 보장</span>
+              </span>
+              <span>&bull;</span>
+              <span class="flex items-center gap-1">
+                <i data-lucide="download" class="w-3.5 h-3.5 text-itmemoPrimary"></i>
+                <span>즉시 열람/다운로드</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. 네이버 블로그 스타일 상세페이지 에디터 렌더링 뷰 -->
+      <section class="max-w-3xl mx-auto">
+        <div class="flex items-center justify-between pb-4 mb-8 border-b border-slate-200">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-itmemoPrimary"></span>
+            <h2 class="text-lg font-bold text-itmemoTextMain">상세 가이드 & 커리큘럼</h2>
+          </div>
+          <span class="text-xs text-slate-400 font-mono">NAVER BLOG POSTING STYLE</span>
+        </div>
+
+        <!-- 블로그 포스팅 렌더링 영역 (깨짐 없이 스타일 완벽 보장) -->
+        <article id="detailBody" class="blog-content prose prose-slate max-w-none text-slate-700">
+          <!-- JS 동적 주입 -->
+        </article>
+
+        <!-- 상세페이지 하단 재구매 CTA 바 -->
+        <div class="mt-16 pt-8 border-t border-slate-200 text-center">
+          <div class="p-8 bg-slate-50 rounded-2xl border border-slate-200">
+            <h3 class="text-xl font-extrabold text-itmemoTextMain mb-2">지체하지 말고 오늘 밤 시작하세요</h3>
+            <p class="text-sm text-itmemoTextSub mb-6">구매 즉시 마이페이지 및 이메일로 파일이 자동 제공됩니다.</p>
+            <button onclick="handleBuyAction()" class="btn-lift inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-bold text-white bg-itmemoPrimary hover:bg-itmemoPrimaryHover shadow-md">
+              <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+              <span>주문서 작성하기</span>
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 에러 상태 -->
+    <div id="errorState" class="hidden text-center py-24">
+      <div class="w-16 h-16 mx-auto rounded-full bg-rose-50 text-rose-500 flex items-center justify-center mb-4">
+        <i data-lucide="alert-circle" class="w-8 h-8"></i>
+      </div>
+      <h2 class="text-xl font-bold text-itmemoTextMain mb-2">상품을 찾을 수 없습니다.</h2>
+      <p class="text-sm text-itmemoTextSub mb-6">존재하지 않거나 삭제된 상품입니다.</p>
+      <a href="index.html" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-itmemoPrimary text-white font-semibold text-sm">
+        <i data-lucide="home" class="w-4 h-4"></i>
+        <span>메인 홈으로 이동</span>
+      </a>
+    </div>
+  </main>
+
+  <!-- 푸터 -->
+  <footer class="mt-20 border-t border-slate-100 bg-white py-10 text-xs text-slate-400 text-center">
+    <div class="max-w-4xl mx-auto px-4 space-y-2">
+      <p>© 2026 IT-MEMO. All rights reserved.</p>
+      <p>본 상품의 콘텐츠 및 블로그 스타일 상세페이지는 브라우저 LocalStorage에 안전하게 저장·관리됩니다.</p>
+    </div>
+  </footer>
+
+  <!-- 토스트 알림창 -->
+  <div id="toastMessage" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="bg-slate-900 text-white px-5 py-3 rounded-xl shadow-xl flex items-center gap-3 border border-slate-800">
+      <i data-lucide="check-circle-2" class="w-5 h-5 text-itmemoPrimary"></i>
+      <span id="toastText" class="text-sm font-medium">알림 메시지</span>
+    </div>
+  </div>
+
+  <script>
+    let currentProduct = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProductDetail();
+      if (window.lucide) lucide.createIcons();
+    });
+
+    function loadProductDetail() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const prodId = urlParams.get('id');
+
+      const loadingEl = document.getElementById('loadingState');
+      const contentEl = document.getElementById('productContent');
+      const errorEl = document.getElementById('errorState');
+
+      if (!prodId || !window.itmemoDB) {
+        loadingEl.classList.add('hidden');
+        errorEl.classList.remove('hidden');
+        return;
+      }
+
+      const product = itmemoDB.getProductById(prodId);
+      if (!product) {
+        loadingEl.classList.add('hidden');
+        errorEl.classList.remove('hidden');
+        return;
+      }
+
+      currentProduct = product;
+      document.title = `${product.title} | IT-MEMO`;
+
+      // 썸네일 & 뱃지 (1:1 정사각)
+      const imgEl = document.getElementById('detailImg');
+      imgEl.src = product.imageUrl || '';
+      imgEl.alt = product.title;
+
+      const badgeEl = document.getElementById('detailBadge');
+      if (product.category === 'vod') {
+        badgeEl.textContent = 'VOD 강의';
+        badgeEl.className = 'absolute top-4 left-4 font-mono text-xs font-bold px-3 py-1 rounded-full shadow-sm bg-blue-500 text-white';
+      } else if (product.category === 'free') {
+        badgeEl.textContent = '무료배포';
+        badgeEl.className = 'absolute top-4 left-4 font-mono text-xs font-bold px-3 py-1 rounded-full shadow-sm bg-emerald-500 text-white';
+      } else {
+        badgeEl.textContent = '전자책';
+        badgeEl.className = 'absolute top-4 left-4 font-mono text-xs font-bold px-3 py-1 rounded-full shadow-sm bg-slate-900 text-white';
+      }
+
+      // 제목 및 설명
+      document.getElementById('detailTitle').textContent = product.title;
+      document.getElementById('detailSummary').textContent = product.summary || '요약 설명이 없습니다.';
+      document.getElementById('detailDate').textContent = `등록일: ${product.createdAt || '2026-10-22'}`;
+
+      // 가격
+      const originalPriceEl = document.getElementById('detailOriginalPrice');
+      const salePriceEl = document.getElementById('detailSalePrice');
+      const discountEl = document.getElementById('detailDiscount');
+      const buyBtnText = document.getElementById('buyBtnText');
+
+      if (product.salePrice === 0) {
+        originalPriceEl.classList.add('hidden');
+        discountEl.classList.add('hidden');
+        salePriceEl.textContent = '0원 (100% 무료)';
+        salePriceEl.classList.add('text-emerald-600');
+        buyBtnText.textContent = '무료로 즉시 다운로드';
+      } else {
+        originalPriceEl.classList.remove('hidden');
+        originalPriceEl.textContent = (product.originalPrice || product.salePrice).toLocaleString() + '원';
+        salePriceEl.textContent = product.salePrice.toLocaleString() + '원';
+        
+        if (product.originalPrice > product.salePrice) {
+          const rate = Math.round(((product.originalPrice - product.salePrice) / product.originalPrice) * 100);
+          discountEl.textContent = `${rate}% 할인`;
+          discountEl.classList.remove('hidden');
+        } else {
+          discountEl.classList.add('hidden');
+        }
+        buyBtnText.textContent = `${product.salePrice.toLocaleString()}원 소장하기`;
+      }
+
+      // 네이버 블로그 상세 본문 렌더링
+      const bodyEl = document.getElementById('detailBody');
+      bodyEl.innerHTML = product.detailContent || '<p class="text-slate-400">상세 설명이 작성되지 않았습니다.</p>';
+
+      loadingEl.classList.add('hidden');
+      contentEl.classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function handleBuyAction() {
+      if (!currentProduct) return;
+      if (currentProduct.salePrice === 0) {
+        showToast('무료 다운로드 링크를 준비 중입니다. 마이페이지에서 확인하실 수 있습니다.');
+        setTimeout(() => {
+          window.location.href = 'mypage.html';
+        }, 1200);
+      } else {
+        showToast(`${currentProduct.title} 결제 화면으로 이동합니다.`);
+        setTimeout(() => {
+          window.location.href = `products.html?buy=${currentProduct.id}`;
+        }, 1000);
+      }
+    }
+
+    function toggleAdminFromDetail() {
+      itmemoDB.setAdminMode(true);
+      window.location.href = 'index.html?mode=admin';
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toastMessage');
+      const text = document.getElementById('toastText');
+      if (!toast || !text) return;
+      text.textContent = message;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
